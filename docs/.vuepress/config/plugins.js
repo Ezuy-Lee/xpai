@@ -85,7 +85,8 @@ module.exports = [
       options: {
         clientID: '4445ed29d0ba82a632a6',
         clientSecret: 'b31d466eb532d84730452de75a1293535b35438a',
-        repo: 'blog-gitalk-comment', // GitHub 仓库
+        //repo: 'blog-gitalk-comment', // GitHub 仓库
+        repo: 'https://github.com/Ezuy-Lee/xpai.git',
         owner: 'Ezuy-Lee', // GitHub仓库所有者
         admin: ['Ezuy-Lee'], // 对仓库有写权限的人
         // distractionFreeMode: true,
