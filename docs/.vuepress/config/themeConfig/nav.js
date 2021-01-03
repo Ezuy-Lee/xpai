@@ -16,34 +16,34 @@ module.exports = [
       },
       {
         text: 'CVS版本控制',
-        link: '/pages/bd16e5/',
+        link: '/pages/5f77f3ea97b75a5c9ffb0c5f1d7e3a72/',
       },
       {
         text: '数据库和缓存',
-        link: '/pages/2581bd/',
+        link: '/pages/70b389/',
         items: [
           
         ]
       },
       {
         text: '设计模式和架构',
-        link: '/pages/94a3fd/',
+        link: '/pages/8a0e5f/',
       },
       {
         text: '容器化和中间件',
-        link: '/pages/e743f9/',
+        link: '/pages/78189d/',
       },
       {
         text: 'Linux运维和测试',
-        link: '/pages/c6b417/',
+        link: '/pages/6d75fa6409b55e52a52a870a48f217fe/',
       },
       {
         text: '大数据和云计算',
-        link: '/pages/8e8a14/',
+        link: '/pages/1d539d/',
       },
       {
         text: '工具和环境',
-        link: '/pages/3f5458/',
+        link: '/pages/41fde4/',
       },
     ],
   },
@@ -58,15 +58,15 @@ module.exports = [
       },
       {
         text: '前端框架',
-        link: '/pages/9f15c1a281d8bedb/',
+        link: '/pages/9c53a1/',
       },
       {
         text: '可视化',
-        link: '/pages/a73ae6/',
+        link: '/pages/291a73/',
       },
       {
         text: 'UI设计和产品',
-        link: '/pages/d4d63f/',
+        link: '/pages/bbf7bd/',
       },
     ],
   },
@@ -75,7 +75,7 @@ module.exports = [
     link: '/work/',
     items: [
       { text: '个人', link: '/pages/236765/',},
-      { text: '公司', link: '/pages/962ae8/',},
+      { text: '公司', link: '/pages/be82e4/',},
     
     ],
   },
@@ -85,15 +85,15 @@ module.exports = [
     items: [
       {
         text: '在线工具',
-        link: '/pages/70eb9b/',
+        link: '/pages/d9f31f/',
       },
       {
         text: '后端工具',
-        link: '/pages/2fe766/',
+        link: '/pages/a9fdaa/',
       },
       {
         text: '前端工具',
-        link: '/pages/f205c2/',
+        link: '/pages/2910b4/',
       },
     ],
   },
@@ -111,7 +111,7 @@ module.exports = [
       },
       {
         text: '软件资源',
-        link: '/pages/3b13c4/',
+        link: '/pages/2e2565/',
       },
       
     ],
