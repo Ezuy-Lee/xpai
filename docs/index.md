@@ -10,15 +10,15 @@ tagline: 为开发者量身制作的技术博客和知识库管理平台。
 features: # 可选的
   - title: 知识库
     details: 分享内容包括:开发工具,环境配置,基本原理等基础知识,以及个人学习笔记,面试题库和业界主流的技术框架等文章.
-    link: /web/ # 可选
+    link: /back_end/ # 可选
     imgUrl: /img/basic.svg # 可选
   - title: 项目实战
     details: 分享主流开发框架的基本原理、使用场景、注意事项、整合方案以及实际项目中的最佳实践等.
-    link: /ui/
+    link: /back_end/
     imgUrl: /img/action.svg
   - title: 平台架构 
     details: 结合实际项目,分享当下热门软件架构设计的核心思想和实践经验,如常见的分层架构,事件驱动架构,微核架构,微服务架构以及云架构.
-    link: /technology/
+    link: /pages/8a0e5f/
     imgUrl: /img/architecture.svg
 
 # 文章列表显示方式: detailed 默认，显示详细版文章列表（包括作者、分类、标签、摘要、分页等）| simple => 显示简约版文章列表（仅标题和日期）| none 不显示文章列表
