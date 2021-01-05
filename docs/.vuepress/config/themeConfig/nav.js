@@ -68,6 +68,10 @@ module.exports = [
         text: 'UI设计和产品',
         link: '/pages/bbf7bd/',
       },
+      {
+        text: 'Vue',
+        link: '/pages/0c01fa/',
+      },
     ],
   },
   {
