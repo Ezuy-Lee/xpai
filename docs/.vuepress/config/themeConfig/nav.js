@@ -120,6 +120,9 @@ module.exports = [
     text: '更多',
     link: '/more/',
     items: [
+      { text: '学习阅读', link: '/pages/284202/' },
+      { text: '面试经验', link: '/pages/96d03e/' },
+      { text: '心情杂谈', link: '/pages/34a617/' },
       { text: '友情链接', link: '/friends/' },
     ],
   },
