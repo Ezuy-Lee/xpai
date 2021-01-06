@@ -5,13 +5,13 @@
   "author": {
     "name": "rainze-Lee"
   },
-  "homepage": "https://github.com/Ezuy-Lee/Rainze-Blog",
+  "homepage": "https://github.com/Ezuy-Lee/xpai",
   "bugs": {
-    "url": "https://github.com/Ezuy-Lee/Rainze-Blog/issues"
+    "url": "https://github.com/Ezuy-Lee/xpai/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ezuy-Lee/Rainze-Blog.git"
+    "url": "git+https://github.com/Ezuy-Lee/xpai.git"
   },
   "dependencies": {
     "@better-scroll/core": "^2.0.0-beta.6",
