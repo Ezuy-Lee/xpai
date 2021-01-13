@@ -8,7 +8,7 @@ module.exports = {
 
   title: "x·π",
   description: 'x·π学院，为开发者量身制作的技术博客和知识库管理平台,简洁至上,专注于前后端技术学习与总结。',
-  base: '/', // 格式：'/<仓库名>/'， 默认'/'
+  base: '/xpai/', // 格式：'/<仓库名>/'， 默认'/'
   markdown: {
     lineNumbers: true, // 代码行号
   },
