@@ -1,17 +1,17 @@
 {
   "name": "vuepress-theme-vdoing",
-  "version": "1.7.2",
+  "version": "1.8.3",
   "description": "Vdoing theme for VuePress. 一个基于VuePress的知识管理兼博客主题。",
   "author": {
-    "name": "rainze-Lee"
+    "name": "gaoyi(Evan) Xu"
   },
-  "homepage": "https://github.com/Ezuy-Lee/xpai",
+  "homepage": "https://github.com/xugaoyi/vuepress-theme-vdoing#readme",
   "bugs": {
-    "url": "https://github.com/Ezuy-Lee/xpai/issues"
+    "url": "https://github.com/xugaoyi/vuepress-theme-vdoing/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ezuy-Lee/xpai.git"
+    "url": "git+https://github.com/xugaoyi/vuepress-theme-vdoing.git"
   },
   "dependencies": {
     "@better-scroll/core": "^2.0.0-beta.6",
@@ -41,7 +41,7 @@
   "license": "MIT",
   "main": "index.js",
   "maintainers": [{
-    "name": "Rainze-Lee",
-    "email": "619147075@qq.com"
+    "name": "Evan xu",
+    "email": "894072666@qq.com"
   }]
 }
