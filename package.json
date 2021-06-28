@@ -28,7 +28,8 @@
   "dependencies": {
     "vuepress-plugin-comment": "^0.7.3",
 	  "increase-memory-limit":"^1.6.0"
-  }
+  },
+	
   "script":{
 	"fix-memory-limit":"cross-env LIMIT=8000 increase-memory-limit"
 		}
