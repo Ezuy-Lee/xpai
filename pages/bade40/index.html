@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Nginx-keepalived高并发解决方案 | x·π</title>
+    <meta name="generator" content="VuePress 1.8.0">
+    <link rel="icon" href="/xpai/img/favicon.ico">
+    <script data-ad-client="ca-pub-7828333725993554" async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta name="description" content="x·π学院，为开发者量身制作的技术博客和知识库管理平台,简洁至上,专注于前后端技术学习与总结。">
+    <meta name="keywords" content="xpai,x,pai,java,前端博客,个人技术博客,前端,前端开发,前端框架,web前端,前端面试题,技术文档,学习,面试,JavaScript,js,ES6,TypeScript,vue,python,css3,html5,Node,git,github,markdown">
+    <meta name="baidu-site-verification" content="7F55weZDDc">
+    <meta name="theme-color" content="#11a8cd">
+    <link rel="preload" href="/xpai/assets/css/0.styles.79838e76.css" as="style"><link rel="preload" href="/xpai/assets/js/app.463a16ef.js" as="script"><link rel="preload" href="/xpai/assets/js/2.86da3580.js" as="script"><link rel="preload" href="/xpai/assets/js/96.b0673c60.js" as="script"><link rel="prefetch" href="/xpai/assets/js/10.7ee6e0f7.js"><link rel="prefetch" href="/xpai/assets/js/100.ca97340e.js"><link rel="prefetch" href="/xpai/assets/js/101.9fe98dac.js"><link rel="prefetch" href="/xpai/assets/js/102.c21bb621.js"><link rel="prefetch" href="/xpai/assets/js/103.8a98d2bf.js"><link rel="prefetch" href="/xpai/assets/js/104.32ba745b.js"><link rel="prefetch" href="/xpai/assets/js/105.e97d1142.js"><link rel="prefetch" href="/xpai/assets/js/106.0eee2433.js"><link rel="prefetch" href="/xpai/assets/js/107.f18ecd30.js"><link rel="prefetch" href="/xpai/assets/js/108.ed1584c8.js"><link rel="prefetch" href="/xpai/assets/js/109.e3f69cfb.js"><link rel="prefetch" href="/xpai/assets/js/11.d966c9a1.js"><link rel="prefetch" href="/xpai/assets/js/110.c1ae9e32.js"><link rel="prefetch" href="/xpai/assets/js/111.a543b13d.js"><link rel="prefetch" href="/xpai/assets/js/112.559c21bb.js"><link rel="prefetch" href="/xpai/assets/js/113.fc113adc.js"><link rel="prefetch" href="/xpai/assets/js/114.50d5e5a7.js"><link rel="prefetch" href="/xpai/assets/js/115.d86f7ff2.js"><link rel="prefetch" href="/xpai/assets/js/116.0b3801f6.js"><link rel="prefetch" href="/xpai/assets/js/117.a56de7c9.js"><link rel="prefetch" href="/xpai/assets/js/118.1eaab9b4.js"><link rel="prefetch" href="/xpai/assets/js/119.d692ea2a.js"><link rel="prefetch" href="/xpai/assets/js/12.8fe99824.js"><link rel="prefetch" href="/xpai/assets/js/120.1bb73ce4.js"><link rel="prefetch" href="/xpai/assets/js/121.ad4fac1b.js"><link rel="prefetch" href="/xpai/assets/js/122.71447b1b.js"><link rel="prefetch" href="/xpai/assets/js/123.24d55eec.js"><link rel="prefetch" href="/xpai/assets/js/124.30b0b26e.js"><link rel="prefetch" href="/xpai/assets/js/125.3c3c7cbd.js"><link rel="prefetch" href="/xpai/assets/js/126.4b8fcd6e.js"><link rel="prefetch" href="/xpai/assets/js/127.9aed11fd.js"><link rel="prefetch" href="/xpai/assets/js/128.ccbfe4a0.js"><link rel="prefetch" href="/xpai/assets/js/129.fe318607.js"><link rel="prefetch" href="/xpai/assets/js/13.b8cb0a32.js"><link rel="prefetch" href="/xpai/assets/js/130.d27b4321.js"><link rel="prefetch" href="/xpai/assets/js/131.54d5c00c.js"><link rel="prefetch" href="/xpai/assets/js/132.d8986010.js"><link rel="prefetch" href="/xpai/assets/js/133.f861411c.js"><link rel="prefetch" href="/xpai/assets/js/134.286bfa2b.js"><link rel="prefetch" href="/xpai/assets/js/135.c3db6ed4.js"><link rel="prefetch" href="/xpai/assets/js/136.a5d2ce64.js"><link rel="prefetch" href="/xpai/assets/js/137.550a2277.js"><link rel="prefetch" href="/xpai/assets/js/138.8a99894a.js"><link rel="prefetch" href="/xpai/assets/js/139.ddbbc94f.js"><link rel="prefetch" href="/xpai/assets/js/14.dcefa034.js"><link rel="prefetch" href="/xpai/assets/js/140.3049d182.js"><link rel="prefetch" href="/xpai/assets/js/141.664f5c5d.js"><link rel="prefetch" href="/xpai/assets/js/142.7cee8107.js"><link rel="prefetch" href="/xpai/assets/js/143.f5ec918e.js"><link rel="prefetch" href="/xpai/assets/js/144.22fd0a33.js"><link rel="prefetch" href="/xpai/assets/js/145.c2333593.js"><link rel="prefetch" href="/xpai/assets/js/146.6d807a23.js"><link rel="prefetch" href="/xpai/assets/js/147.29a3cf6f.js"><link rel="prefetch" href="/xpai/assets/js/148.bd6ee5eb.js"><link rel="prefetch" href="/xpai/assets/js/149.7dc1d1ae.js"><link rel="prefetch" href="/xpai/assets/js/15.2a4d0706.js"><link rel="prefetch" href="/xpai/assets/js/150.f40432ae.js"><link rel="prefetch" href="/xpai/assets/js/151.a919b3cc.js"><link rel="prefetch" href="/xpai/assets/js/152.4fa71eca.js"><link rel="prefetch" href="/xpai/assets/js/153.817a4e74.js"><link rel="prefetch" href="/xpai/assets/js/154.2813e444.js"><link rel="prefetch" href="/xpai/assets/js/155.15e81052.js"><link rel="prefetch" href="/xpai/assets/js/156.fa34a481.js"><link rel="prefetch" href="/xpai/assets/js/157.b08b85b0.js"><link rel="prefetch" href="/xpai/assets/js/158.d5371c5a.js"><link rel="prefetch" href="/xpai/assets/js/159.dd75b5f2.js"><link rel="prefetch" href="/xpai/assets/js/16.100620ac.js"><link rel="prefetch" href="/xpai/assets/js/160.127a3238.js"><link rel="prefetch" href="/xpai/assets/js/161.bb763729.js"><link rel="prefetch" href="/xpai/assets/js/162.3f583d73.js"><link rel="prefetch" href="/xpai/assets/js/163.45f9c3c5.js"><link rel="prefetch" href="/xpai/assets/js/164.b517304e.js"><link rel="prefetch" href="/xpai/assets/js/165.78f3e227.js"><link rel="prefetch" href="/xpai/assets/js/166.52ab083a.js"><link rel="prefetch" href="/xpai/assets/js/167.3ff08448.js"><link rel="prefetch" href="/xpai/assets/js/168.b76ede0e.js"><link rel="prefetch" href="/xpai/assets/js/169.e7045a07.js"><link rel="prefetch" href="/xpai/assets/js/17.edd38bb7.js"><link rel="prefetch" href="/xpai/assets/js/170.28967c99.js"><link rel="prefetch" href="/xpai/assets/js/171.c3b3d33f.js"><link rel="prefetch" href="/xpai/assets/js/172.8efd4d5f.js"><link rel="prefetch" href="/xpai/assets/js/173.e8929a24.js"><link rel="prefetch" href="/xpai/assets/js/174.69fd1c95.js"><link rel="prefetch" href="/xpai/assets/js/175.71b34cd8.js"><link rel="prefetch" href="/xpai/assets/js/176.d12259c4.js"><link rel="prefetch" href="/xpai/assets/js/177.43021615.js"><link rel="prefetch" href="/xpai/assets/js/178.2110b762.js"><link rel="prefetch" href="/xpai/assets/js/179.3ee7894a.js"><link rel="prefetch" href="/xpai/assets/js/18.60ad374d.js"><link rel="prefetch" href="/xpai/assets/js/180.0203c68e.js"><link rel="prefetch" href="/xpai/assets/js/181.9de24c6a.js"><link rel="prefetch" href="/xpai/assets/js/182.8bd7b605.js"><link rel="prefetch" href="/xpai/assets/js/183.7b9777ab.js"><link rel="prefetch" href="/xpai/assets/js/184.06c8f682.js"><link rel="prefetch" href="/xpai/assets/js/185.533fd089.js"><link rel="prefetch" href="/xpai/assets/js/186.da02af0d.js"><link rel="prefetch" href="/xpai/assets/js/187.0ad9bbf4.js"><link rel="prefetch" href="/xpai/assets/js/188.680a1397.js"><link rel="prefetch" href="/xpai/assets/js/189.2b70c6ba.js"><link rel="prefetch" href="/xpai/assets/js/19.37ca1303.js"><link rel="prefetch" href="/xpai/assets/js/190.72b2201b.js"><link rel="prefetch" href="/xpai/assets/js/191.452f27d6.js"><link rel="prefetch" href="/xpai/assets/js/192.77a42070.js"><link rel="prefetch" href="/xpai/assets/js/193.5df63776.js"><link rel="prefetch" href="/xpai/assets/js/194.60512671.js"><link rel="prefetch" href="/xpai/assets/js/195.dfee0b35.js"><link rel="prefetch" href="/xpai/assets/js/196.b089bf1c.js"><link rel="prefetch" href="/xpai/assets/js/197.3231ab2f.js"><link rel="prefetch" href="/xpai/assets/js/198.d7cc85e4.js"><link rel="prefetch" href="/xpai/assets/js/199.49b9190b.js"><link rel="prefetch" href="/xpai/assets/js/20.49b1af17.js"><link rel="prefetch" href="/xpai/assets/js/200.312f11fb.js"><link rel="prefetch" href="/xpai/assets/js/201.22e1bc76.js"><link rel="prefetch" href="/xpai/assets/js/202.df0ea0e5.js"><link rel="prefetch" href="/xpai/assets/js/203.8e21b7a0.js"><link rel="prefetch" href="/xpai/assets/js/204.2ae4a97a.js"><link rel="prefetch" href="/xpai/assets/js/205.5cbe7da4.js"><link rel="prefetch" href="/xpai/assets/js/206.d5e490e9.js"><link rel="prefetch" href="/xpai/assets/js/207.f34c5ce1.js"><link rel="prefetch" href="/xpai/assets/js/208.5fdf7bf3.js"><link rel="prefetch" href="/xpai/assets/js/209.b028c8d0.js"><link rel="prefetch" href="/xpai/assets/js/21.db66bdd8.js"><link rel="prefetch" href="/xpai/assets/js/210.75dfc456.js"><link rel="prefetch" href="/xpai/assets/js/211.76bdfd3a.js"><link rel="prefetch" href="/xpai/assets/js/212.6f693c8e.js"><link rel="prefetch" href="/xpai/assets/js/213.78008b66.js"><link rel="prefetch" href="/xpai/assets/js/214.0289290f.js"><link rel="prefetch" href="/xpai/assets/js/215.fea6ffaf.js"><link rel="prefetch" href="/xpai/assets/js/216.232c62bc.js"><link rel="prefetch" href="/xpai/assets/js/217.7eb2090b.js"><link rel="prefetch" href="/xpai/assets/js/218.40542780.js"><link rel="prefetch" href="/xpai/assets/js/219.0a908ea4.js"><link rel="prefetch" href="/xpai/assets/js/22.ad9dc733.js"><link rel="prefetch" href="/xpai/assets/js/220.b0417a42.js"><link rel="prefetch" href="/xpai/assets/js/221.24ec4a64.js"><link rel="prefetch" href="/xpai/assets/js/222.5cd49c8f.js"><link rel="prefetch" href="/xpai/assets/js/223.c502ecd6.js"><link rel="prefetch" href="/xpai/assets/js/224.1de749c7.js"><link rel="prefetch" href="/xpai/assets/js/225.f3d0e310.js"><link rel="prefetch" href="/xpai/assets/js/226.65550f73.js"><link rel="prefetch" href="/xpai/assets/js/227.dda125e0.js"><link rel="prefetch" href="/xpai/assets/js/228.5a206fc6.js"><link rel="prefetch" href="/xpai/assets/js/229.d4421e9e.js"><link rel="prefetch" href="/xpai/assets/js/23.3428586b.js"><link rel="prefetch" href="/xpai/assets/js/230.c74da9c1.js"><link rel="prefetch" href="/xpai/assets/js/231.9a0a1cf7.js"><link rel="prefetch" href="/xpai/assets/js/232.e63a0e1f.js"><link rel="prefetch" href="/xpai/assets/js/233.df08bcaa.js"><link rel="prefetch" href="/xpai/assets/js/234.96ed772e.js"><link rel="prefetch" href="/xpai/assets/js/235.3ec201f2.js"><link rel="prefetch" href="/xpai/assets/js/236.57013513.js"><link rel="prefetch" href="/xpai/assets/js/237.914aea19.js"><link rel="prefetch" href="/xpai/assets/js/238.a202c8a7.js"><link rel="prefetch" href="/xpai/assets/js/239.9f593f79.js"><link rel="prefetch" href="/xpai/assets/js/24.1ec99cff.js"><link rel="prefetch" href="/xpai/assets/js/240.8e44d3ca.js"><link rel="prefetch" href="/xpai/assets/js/241.4ba1e308.js"><link rel="prefetch" href="/xpai/assets/js/242.8529cc75.js"><link rel="prefetch" href="/xpai/assets/js/243.5004c9b3.js"><link rel="prefetch" href="/xpai/assets/js/244.a2119850.js"><link rel="prefetch" href="/xpai/assets/js/245.8c643ead.js"><link rel="prefetch" href="/xpai/assets/js/246.c0fba80d.js"><link rel="prefetch" href="/xpai/assets/js/247.000e839a.js"><link rel="prefetch" href="/xpai/assets/js/248.2d135521.js"><link rel="prefetch" href="/xpai/assets/js/249.3422287d.js"><link rel="prefetch" href="/xpai/assets/js/25.117dc1ab.js"><link rel="prefetch" href="/xpai/assets/js/250.f329da47.js"><link rel="prefetch" href="/xpai/assets/js/251.51e2aad1.js"><link rel="prefetch" href="/xpai/assets/js/252.9cb3d88b.js"><link rel="prefetch" href="/xpai/assets/js/253.9da51af7.js"><link rel="prefetch" href="/xpai/assets/js/254.3165fc09.js"><link rel="prefetch" href="/xpai/assets/js/255.cb4062a4.js"><link rel="prefetch" href="/xpai/assets/js/256.d79d6f90.js"><link rel="prefetch" href="/xpai/assets/js/257.12fb4db7.js"><link rel="prefetch" href="/xpai/assets/js/258.e1515c48.js"><link rel="prefetch" href="/xpai/assets/js/259.0a09c73f.js"><link rel="prefetch" href="/xpai/assets/js/26.7b6f1292.js"><link rel="prefetch" href="/xpai/assets/js/260.54480a98.js"><link rel="prefetch" href="/xpai/assets/js/261.0545fd8e.js"><link rel="prefetch" href="/xpai/assets/js/262.ff374c70.js"><link rel="prefetch" href="/xpai/assets/js/263.ee5f0590.js"><link rel="prefetch" href="/xpai/assets/js/264.483d0ef8.js"><link rel="prefetch" href="/xpai/assets/js/265.4da521dc.js"><link rel="prefetch" href="/xpai/assets/js/266.aaeb58f1.js"><link rel="prefetch" href="/xpai/assets/js/267.aca23f83.js"><link rel="prefetch" href="/xpai/assets/js/268.f3b2d4a1.js"><link rel="prefetch" href="/xpai/assets/js/269.b4409f77.js"><link rel="prefetch" href="/xpai/assets/js/27.4abb37d7.js"><link rel="prefetch" href="/xpai/assets/js/270.d76a14f2.js"><link rel="prefetch" href="/xpai/assets/js/271.8242cd05.js"><link rel="prefetch" href="/xpai/assets/js/272.799398e1.js"><link rel="prefetch" href="/xpai/assets/js/273.90aee646.js"><link rel="prefetch" href="/xpai/assets/js/274.f8b4ca70.js"><link rel="prefetch" href="/xpai/assets/js/275.c2ee0bd0.js"><link rel="prefetch" href="/xpai/assets/js/276.742fe95c.js"><link rel="prefetch" href="/xpai/assets/js/277.d6040ffc.js"><link rel="prefetch" href="/xpai/assets/js/278.ab5d4432.js"><link rel="prefetch" href="/xpai/assets/js/279.188e5df9.js"><link rel="prefetch" href="/xpai/assets/js/28.1c1fe9b2.js"><link rel="prefetch" href="/xpai/assets/js/280.e9b9f629.js"><link rel="prefetch" href="/xpai/assets/js/281.a83c892f.js"><link rel="prefetch" href="/xpai/assets/js/282.2fab9b7f.js"><link rel="prefetch" href="/xpai/assets/js/283.1971678f.js"><link rel="prefetch" href="/xpai/assets/js/284.9e42daa0.js"><link rel="prefetch" href="/xpai/assets/js/285.cd747472.js"><link rel="prefetch" href="/xpai/assets/js/286.8e468c09.js"><link rel="prefetch" href="/xpai/assets/js/287.22c9485f.js"><link rel="prefetch" href="/xpai/assets/js/288.34101bfd.js"><link rel="prefetch" href="/xpai/assets/js/289.d12821df.js"><link rel="prefetch" href="/xpai/assets/js/29.ab9e2995.js"><link rel="prefetch" href="/xpai/assets/js/290.73ca9fde.js"><link rel="prefetch" href="/xpai/assets/js/291.0e9a3b5a.js"><link rel="prefetch" href="/xpai/assets/js/292.ddd9db4e.js"><link rel="prefetch" href="/xpai/assets/js/293.5151011b.js"><link rel="prefetch" href="/xpai/assets/js/294.787e0f5a.js"><link rel="prefetch" href="/xpai/assets/js/295.6be83c2e.js"><link rel="prefetch" href="/xpai/assets/js/296.179e3bae.js"><link rel="prefetch" href="/xpai/assets/js/297.980f652e.js"><link rel="prefetch" href="/xpai/assets/js/298.827ba7c3.js"><link rel="prefetch" href="/xpai/assets/js/299.c7715539.js"><link rel="prefetch" href="/xpai/assets/js/3.cab0040e.js"><link rel="prefetch" href="/xpai/assets/js/30.bb98e080.js"><link rel="prefetch" href="/xpai/assets/js/300.3a5e31e3.js"><link rel="prefetch" href="/xpai/assets/js/301.652d80ac.js"><link rel="prefetch" href="/xpai/assets/js/302.388b4851.js"><link rel="prefetch" href="/xpai/assets/js/303.5f95420a.js"><link rel="prefetch" href="/xpai/assets/js/304.9543ba37.js"><link rel="prefetch" href="/xpai/assets/js/305.0a4d2b3d.js"><link rel="prefetch" href="/xpai/assets/js/306.16988031.js"><link rel="prefetch" href="/xpai/assets/js/307.4d7a759d.js"><link rel="prefetch" href="/xpai/assets/js/308.27e25b6a.js"><link rel="prefetch" href="/xpai/assets/js/309.8471a949.js"><link rel="prefetch" href="/xpai/assets/js/31.68e0e25d.js"><link rel="prefetch" href="/xpai/assets/js/310.e9b36953.js"><link rel="prefetch" href="/xpai/assets/js/311.5463ec0c.js"><link rel="prefetch" href="/xpai/assets/js/312.334ad312.js"><link rel="prefetch" href="/xpai/assets/js/313.7ce59ee7.js"><link rel="prefetch" href="/xpai/assets/js/314.24652da0.js"><link rel="prefetch" href="/xpai/assets/js/315.2cfa659a.js"><link rel="prefetch" href="/xpai/assets/js/316.6e19c913.js"><link rel="prefetch" href="/xpai/assets/js/317.4f08fa8e.js"><link rel="prefetch" href="/xpai/assets/js/318.c184fba2.js"><link rel="prefetch" href="/xpai/assets/js/319.d94e39eb.js"><link rel="prefetch" href="/xpai/assets/js/32.ef68da65.js"><link rel="prefetch" href="/xpai/assets/js/320.49cf32bc.js"><link rel="prefetch" href="/xpai/assets/js/321.c285126f.js"><link rel="prefetch" href="/xpai/assets/js/322.588c7bd1.js"><link rel="prefetch" href="/xpai/assets/js/323.9116b884.js"><link rel="prefetch" href="/xpai/assets/js/324.2ea5c8c8.js"><link rel="prefetch" href="/xpai/assets/js/325.5010ca7b.js"><link rel="prefetch" href="/xpai/assets/js/326.eb06b2a3.js"><link rel="prefetch" href="/xpai/assets/js/327.adc38e90.js"><link rel="prefetch" href="/xpai/assets/js/328.db03c4e6.js"><link rel="prefetch" href="/xpai/assets/js/329.acb93377.js"><link rel="prefetch" href="/xpai/assets/js/33.5d570484.js"><link rel="prefetch" href="/xpai/assets/js/330.646a6c29.js"><link rel="prefetch" href="/xpai/assets/js/331.b8782f0b.js"><link rel="prefetch" href="/xpai/assets/js/332.f0db34b4.js"><link rel="prefetch" href="/xpai/assets/js/333.fa51fd3e.js"><link rel="prefetch" href="/xpai/assets/js/334.60fc8f8d.js"><link rel="prefetch" href="/xpai/assets/js/335.e7cedbc9.js"><link rel="prefetch" href="/xpai/assets/js/336.23ebc07f.js"><link rel="prefetch" href="/xpai/assets/js/337.359d68de.js"><link rel="prefetch" href="/xpai/assets/js/338.5b6b6766.js"><link rel="prefetch" href="/xpai/assets/js/339.fc66f3d7.js"><link rel="prefetch" href="/xpai/assets/js/34.a5238ebc.js"><link rel="prefetch" href="/xpai/assets/js/340.7cfc7432.js"><link rel="prefetch" href="/xpai/assets/js/341.4304cbba.js"><link rel="prefetch" href="/xpai/assets/js/342.ffa46baf.js"><link rel="prefetch" href="/xpai/assets/js/343.ce0a15f1.js"><link rel="prefetch" href="/xpai/assets/js/344.3324ad6c.js"><link rel="prefetch" href="/xpai/assets/js/345.141f5109.js"><link rel="prefetch" href="/xpai/assets/js/346.607ca4f2.js"><link rel="prefetch" href="/xpai/assets/js/347.7caeef96.js"><link rel="prefetch" href="/xpai/assets/js/348.f0775e41.js"><link rel="prefetch" href="/xpai/assets/js/349.a001db3d.js"><link rel="prefetch" href="/xpai/assets/js/35.59de4997.js"><link rel="prefetch" href="/xpai/assets/js/350.77cc6653.js"><link rel="prefetch" href="/xpai/assets/js/351.34fe0651.js"><link rel="prefetch" href="/xpai/assets/js/36.ff92d3c8.js"><link rel="prefetch" href="/xpai/assets/js/37.4351ce5f.js"><link rel="prefetch" href="/xpai/assets/js/38.9eca4ff4.js"><link rel="prefetch" href="/xpai/assets/js/39.265a5d9a.js"><link rel="prefetch" href="/xpai/assets/js/4.10fa6d3b.js"><link rel="prefetch" href="/xpai/assets/js/40.3635d39d.js"><link rel="prefetch" href="/xpai/assets/js/41.4f91b146.js"><link rel="prefetch" href="/xpai/assets/js/42.2b713cb9.js"><link rel="prefetch" href="/xpai/assets/js/43.2c34c804.js"><link rel="prefetch" href="/xpai/assets/js/44.8f191f8f.js"><link rel="prefetch" href="/xpai/assets/js/45.4f628df8.js"><link rel="prefetch" href="/xpai/assets/js/46.1c757b3d.js"><link rel="prefetch" href="/xpai/assets/js/47.2961b598.js"><link rel="prefetch" href="/xpai/assets/js/48.54ffe40c.js"><link rel="prefetch" href="/xpai/assets/js/49.e0e4765d.js"><link rel="prefetch" href="/xpai/assets/js/5.ab0b3475.js"><link rel="prefetch" href="/xpai/assets/js/50.2de67866.js"><link rel="prefetch" href="/xpai/assets/js/51.e1ce0592.js"><link rel="prefetch" href="/xpai/assets/js/52.21f1bb15.js"><link rel="prefetch" href="/xpai/assets/js/53.557503f1.js"><link rel="prefetch" href="/xpai/assets/js/54.98566dfe.js"><link rel="prefetch" href="/xpai/assets/js/55.960d350f.js"><link rel="prefetch" href="/xpai/assets/js/56.e59740f6.js"><link rel="prefetch" href="/xpai/assets/js/57.f5af4efc.js"><link rel="prefetch" href="/xpai/assets/js/58.3db80afc.js"><link rel="prefetch" href="/xpai/assets/js/59.fb2fac89.js"><link rel="prefetch" href="/xpai/assets/js/6.41101de3.js"><link rel="prefetch" href="/xpai/assets/js/60.ef88b46d.js"><link rel="prefetch" href="/xpai/assets/js/61.331d64e6.js"><link rel="prefetch" href="/xpai/assets/js/62.c5cbce0e.js"><link rel="prefetch" href="/xpai/assets/js/63.6dbec697.js"><link rel="prefetch" href="/xpai/assets/js/64.46384523.js"><link rel="prefetch" href="/xpai/assets/js/65.5ff2ae14.js"><link rel="prefetch" href="/xpai/assets/js/66.97f80a65.js"><link rel="prefetch" href="/xpai/assets/js/67.bf1f054e.js"><link rel="prefetch" href="/xpai/assets/js/68.8e84d8ae.js"><link rel="prefetch" href="/xpai/assets/js/69.a3026fe1.js"><link rel="prefetch" href="/xpai/assets/js/7.7b35634d.js"><link rel="prefetch" href="/xpai/assets/js/70.40196887.js"><link rel="prefetch" href="/xpai/assets/js/71.0058aceb.js"><link rel="prefetch" href="/xpai/assets/js/72.7b3cc131.js"><link rel="prefetch" href="/xpai/assets/js/73.cd93e827.js"><link rel="prefetch" href="/xpai/assets/js/74.1600d2c6.js"><link rel="prefetch" href="/xpai/assets/js/75.4662b401.js"><link rel="prefetch" href="/xpai/assets/js/76.0163c641.js"><link rel="prefetch" href="/xpai/assets/js/77.d30ad138.js"><link rel="prefetch" href="/xpai/assets/js/78.70e29d3d.js"><link rel="prefetch" href="/xpai/assets/js/79.d7dd87f6.js"><link rel="prefetch" href="/xpai/assets/js/8.5f0e5018.js"><link rel="prefetch" href="/xpai/assets/js/80.e15cdd35.js"><link rel="prefetch" href="/xpai/assets/js/81.d7722150.js"><link rel="prefetch" href="/xpai/assets/js/82.8db1dc2d.js"><link rel="prefetch" href="/xpai/assets/js/83.8cdd8e3d.js"><link rel="prefetch" href="/xpai/assets/js/84.be3bbb89.js"><link rel="prefetch" href="/xpai/assets/js/85.bd4fb17d.js"><link rel="prefetch" href="/xpai/assets/js/86.8132e8a6.js"><link rel="prefetch" href="/xpai/assets/js/87.eef138b7.js"><link rel="prefetch" href="/xpai/assets/js/88.6a955e9d.js"><link rel="prefetch" href="/xpai/assets/js/89.35fe37ae.js"><link rel="prefetch" href="/xpai/assets/js/9.8b0545db.js"><link rel="prefetch" href="/xpai/assets/js/90.c663c19c.js"><link rel="prefetch" href="/xpai/assets/js/91.1b5a38b0.js"><link rel="prefetch" href="/xpai/assets/js/92.db3ae417.js"><link rel="prefetch" href="/xpai/assets/js/93.d5e4a4c0.js"><link rel="prefetch" href="/xpai/assets/js/94.295d99d0.js"><link rel="prefetch" href="/xpai/assets/js/95.49a70622.js"><link rel="prefetch" href="/xpai/assets/js/97.529dda13.js"><link rel="prefetch" href="/xpai/assets/js/98.b7c5d802.js"><link rel="prefetch" href="/xpai/assets/js/99.f0302d8a.js">
+    <link rel="stylesheet" href="/xpai/assets/css/0.styles.79838e76.css">
+  </head>
+  <body class="theme-mode-light">
+    <div id="app" data-server-rendered="true"><div class="theme-container sidebar-open have-rightmenu"><header class="navbar blur"><div title="目录" class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/xpai/" class="home-link router-link-active"><img src="/xpai/img/logo.png" alt="x·π" class="logo"> <span class="site-name can-hide">x·π</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/xpai/" class="nav-link">首页</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="后端" class="dropdown-title"><a href="/xpai/back_end/" class="link-title">后端</a> <span class="title" style="display:none;">后端</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/6d04efbdfa185c88916a6edec2b5bec9/" class="nav-link">Java基础篇</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/6b89cf0a450c5012bb4bdc12eea6bf40/" class="nav-link">Java框架篇</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/5f77f3ea97b75a5c9ffb0c5f1d7e3a72/" class="nav-link">CVS版本控制</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/70b389/" class="nav-link">数据库和缓存</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/8a0e5f/" class="nav-link">设计模式和架构</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/78189d/" class="nav-link">容器化和中间件</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/6d75fa6409b55e52a52a870a48f217fe/" class="nav-link">Linux运维和测试</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/1d539d/" class="nav-link">大数据和云计算</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/41fde4/" class="nav-link">工具和环境</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="前端" class="dropdown-title"><a href="/xpai/web/" class="link-title">前端</a> <span class="title" style="display:none;">前端</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/of4wa5/" class="nav-link">前端基础</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/9c53a1/" class="nav-link">前端框架</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/291a73/" class="nav-link">可视化</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/bbf7bd/" class="nav-link">UI设计和产品</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/0c01fa/" class="nav-link">Vue</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="工作" class="dropdown-title"><a href="/xpai/work/" class="link-title">工作</a> <span class="title" style="display:none;">工作</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/236765/" class="nav-link">个人</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/be82e4/" class="nav-link">公司</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="工具箱" class="dropdown-title"><a href="/xpai/tool/" class="link-title">工具箱</a> <span class="title" style="display:none;">工具箱</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/d9f31f/" class="nav-link">在线工具</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/a9fdaa/" class="nav-link">后端工具</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/2910b4/" class="nav-link">前端工具</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="导航" class="dropdown-title"><a href="/xpai/navigation/" class="link-title">导航</a> <span class="title" style="display:none;">导航</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/a0fb53/" class="nav-link">后端学习</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/c0ac49/" class="nav-link">前端学习</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/2e2565/" class="nav-link">软件资源</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="更多" class="dropdown-title"><a href="/xpai/more/" class="link-title">更多</a> <span class="title" style="display:none;">更多</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/284202/" class="nav-link">学习阅读</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/96d03e/" class="nav-link">面试经验</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/34a617/" class="nav-link">心情杂谈</a></li><li class="dropdown-item"><!----> <a href="/xpai/friends/" class="nav-link">友情链接</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="索引" class="dropdown-title"><a href="/xpai/archives/" class="link-title">索引</a> <span class="title" style="display:none;">索引</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/categories/" class="nav-link">分类</a></li><li class="dropdown-item"><!----> <a href="/xpai/tags/" class="nav-link">标签</a></li><li class="dropdown-item"><!----> <a href="/xpai/archives/" class="nav-link">归档</a></li></ul></div></div><div class="nav-item"><a href="/xpai/about/" class="nav-link">关于</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar" style="display:none;"><div class="blogger"><img src="https://cdn.jsdelivr.net/gh/Ezuy-Lee/RainzeDrawingBed/media/blogger-avatar.png"> <div class="blogger-info"><h3>雨小泽</h3> <span>一个北漂95后！正在潜心研究前端和Java后端技术，一边学习一边积累经验</span></div></div> <nav class="nav-links"><div class="nav-item"><a href="/xpai/" class="nav-link">首页</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="后端" class="dropdown-title"><a href="/xpai/back_end/" class="link-title">后端</a> <span class="title" style="display:none;">后端</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/6d04efbdfa185c88916a6edec2b5bec9/" class="nav-link">Java基础篇</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/6b89cf0a450c5012bb4bdc12eea6bf40/" class="nav-link">Java框架篇</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/5f77f3ea97b75a5c9ffb0c5f1d7e3a72/" class="nav-link">CVS版本控制</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/70b389/" class="nav-link">数据库和缓存</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/8a0e5f/" class="nav-link">设计模式和架构</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/78189d/" class="nav-link">容器化和中间件</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/6d75fa6409b55e52a52a870a48f217fe/" class="nav-link">Linux运维和测试</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/1d539d/" class="nav-link">大数据和云计算</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/41fde4/" class="nav-link">工具和环境</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="前端" class="dropdown-title"><a href="/xpai/web/" class="link-title">前端</a> <span class="title" style="display:none;">前端</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/of4wa5/" class="nav-link">前端基础</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/9c53a1/" class="nav-link">前端框架</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/291a73/" class="nav-link">可视化</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/bbf7bd/" class="nav-link">UI设计和产品</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/0c01fa/" class="nav-link">Vue</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="工作" class="dropdown-title"><a href="/xpai/work/" class="link-title">工作</a> <span class="title" style="display:none;">工作</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/236765/" class="nav-link">个人</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/be82e4/" class="nav-link">公司</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="工具箱" class="dropdown-title"><a href="/xpai/tool/" class="link-title">工具箱</a> <span class="title" style="display:none;">工具箱</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/d9f31f/" class="nav-link">在线工具</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/a9fdaa/" class="nav-link">后端工具</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/2910b4/" class="nav-link">前端工具</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="导航" class="dropdown-title"><a href="/xpai/navigation/" class="link-title">导航</a> <span class="title" style="display:none;">导航</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/a0fb53/" class="nav-link">后端学习</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/c0ac49/" class="nav-link">前端学习</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/2e2565/" class="nav-link">软件资源</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="更多" class="dropdown-title"><a href="/xpai/more/" class="link-title">更多</a> <span class="title" style="display:none;">更多</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/284202/" class="nav-link">学习阅读</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/96d03e/" class="nav-link">面试经验</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/34a617/" class="nav-link">心情杂谈</a></li><li class="dropdown-item"><!----> <a href="/xpai/friends/" class="nav-link">友情链接</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="索引" class="dropdown-title"><a href="/xpai/archives/" class="link-title">索引</a> <span class="title" style="display:none;">索引</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/categories/" class="nav-link">分类</a></li><li class="dropdown-item"><!----> <a href="/xpai/tags/" class="nav-link">标签</a></li><li class="dropdown-item"><!----> <a href="/xpai/archives/" class="nav-link">归档</a></li></ul></div></div><div class="nav-item"><a href="/xpai/about/" class="nav-link">关于</a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Java基础篇</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Java框架篇</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>CVS版本控制</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>数据库和缓存</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>设计模式和架构</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/xpai/pages/8a0e5f/" class="sidebar-link">《设计模式和架构》</a></li><li><a href="/xpai/pages/47e04d/" class="sidebar-link">微服务</a></li><li><a href="/xpai/pages/299bfa/" class="sidebar-link">API 网关</a></li><li><a href="/xpai/pages/ad4ec8/" class="sidebar-link">进程间通信</a></li><li><a href="/xpai/pages/293317/" class="sidebar-link">服务发现</a></li><li><a href="/xpai/pages/d9b95c/" class="sidebar-link">事件驱动数据管理</a></li><li><a href="/xpai/pages/c1a372/" class="sidebar-link">选择部署策略</a></li><li><a href="/xpai/pages/cc8137/" class="sidebar-link">重构单体应用为微服务</a></li><li><a href="/xpai/pages/471f32/" class="sidebar-link">Java设计模式概念</a></li><li><a href="/xpai/pages/bade40/" aria-current="page" class="active sidebar-link">Nginx-keepalived高并发解决方案</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#nginx介绍" class="sidebar-link">Nginx介绍</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#nginx下载和安装" class="sidebar-link">Nginx下载和安装</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#nginx常用命令" class="sidebar-link">Nginx常用命令</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#模块介绍" class="sidebar-link">模块介绍</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#主模块" class="sidebar-link">主模块</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#nginx处理http的核心功能模块" class="sidebar-link">Nginx处理HTTP的核心功能模块</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#http负载均衡模块-http-upstream" class="sidebar-link">HTTP负载均衡模块（HTTP Upstream）</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#http访问控制模块-http-access" class="sidebar-link">HTTP访问控制模块（HTTP Access）</a></li></ul></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#nginx-tomcat实现集群" class="sidebar-link">Nginx+tomcat实现集群</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#配置说明" class="sidebar-link">配置说明</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#nginx搭建图片服务器" class="sidebar-link">Nginx搭建图片服务器</a></li></ul></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#keepalived-nginx-集群解决单点故障" class="sidebar-link">keepalived+nginx 集群解决单点故障</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#keepalived介绍" class="sidebar-link">keepalived介绍</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#方案介绍" class="sidebar-link">方案介绍</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#nginx安装" class="sidebar-link">Nginx安装</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#keepalived安装" class="sidebar-link">keepalived安装</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#配置主节点" class="sidebar-link">配置主节点</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#配置从节点" class="sidebar-link">配置从节点</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#nginx检查脚本" class="sidebar-link">Nginx检查脚本</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/bade40/#配置说明-2" class="sidebar-link">配置说明</a></li></ul></li></ul></li><li><a href="/xpai/pages/85a08b/" class="sidebar-link">分布式架构SpringSecurity+CAS实现单点登录</a></li><li><a href="/xpai/pages/ec5548/" class="sidebar-link">灰度发布浅析</a></li><li><a href="/xpai/pages/e1e1a3/" class="sidebar-link">2PC3PC到底是啥</a></li><li><a href="/xpai/pages/fcafb0/" class="sidebar-link">从ACID到CAPBASE</a></li><li><a href="/xpai/pages/6e6fb7/" class="sidebar-link">限流浅析</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>容器化和中间件</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Linux运维和测试</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>大数据和云计算</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>工具和环境</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>算法</span> <span class="arrow right"></span></p> <!----></section></li></ul> <div class="sidebar-slot sidebar-slot-bottom"><!-- 正方形 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="3508773082"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div></aside> <div><main class="page"><div class="theme-vdoing-wrapper "><div class="articleInfo-wrap" data-v-1cd794fe><div class="articleInfo" data-v-1cd794fe><ul class="breadcrumbs" data-v-1cd794fe><li data-v-1cd794fe><a href="/xpai/" title="首页" class="iconfont icon-home router-link-active" data-v-1cd794fe></a></li> <li data-v-1cd794fe><a href="/xpai/back_end" title="后端-目录页" data-v-1cd794fe>后端</a></li> <li data-v-1cd794fe><a href="/xpai/back_end/#设计模式和架构" title="后端#设计模式和架构" data-v-1cd794fe>设计模式和架构</a></li> <!----></ul> <div class="info" data-v-1cd794fe><div title="作者" class="author iconfont icon-touxiang" data-v-1cd794fe><a href="https://github.com/Ezuy-Lee" target="_blank" title="作者" class="beLink" data-v-1cd794fe>Rainze-Lee</a></div> <div title="创建时间" class="date iconfont icon-riqi" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>2021-06-24</a></div> <!----></div></div></div> <!----> <div class="content-wrapper"><div class="right-menu-wrapper"><div class="right-menu-margin"><div class="right-menu-content"></div></div></div> <h1><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABH1JREFUSA3tVl1oHFUUPmdmd2ltklqbpJDiNnXFmgbFktho7YMPNiJSSZM0+CAYSkUELVhM6YuwIPpgoOKDqOBDC0XE2CQoNtQXBUFTTcCi+Wlh1V2TQExsUzcltd3M9Tt3ZjZzZ2fT+OJTL8yeM+eee757fmeJbq//KQL8X3DUSFOcfr7cRsRtxNQMWueeVzOkaITIGqQHNg5y8+jNW9ldM7A6nTpAjuolUikAwq7CE3WcM2RRDz+XGVgN3FptU/aUSlvq9Pa3iZ1+sgAqJyyAFqkipd9dqiwHF3P65YycLWc/6sqGrvoEoIp6DOFaX5h6+dnfjkWprwqsPk0dUGq5vySwDImC10KxFHgGL1SWoc92O3eVht09qdXNH11I2SsTsJYqMWzihqGMi+A+Garf3BAuuLI5oGlULyNfyB/HYNujwktOfRrMr5t77NmevqaUopx0grnKAyvVpmwUDB4x6FPXuGvYLTDwWsejwgtgkYKPqRJg8SV6xaiZ3ZTppGneS4yfH5/66fZSDHv+QZci/+h5c5UHtpy67JUqGppM0sh0Nc1dW6/N1W5Yoqat8/TU/VnadmdeW2PLLSyh0cvxBs3KbqTmwYPpxN4do/mzE8nEpvX/UMu2Wbp74zUAK5q6WkHns7V0eWkdPbPzd3rxkTGybadYySumVzhcaJFbs5UrEkQ/+CK8gF5dnh/6ciIZ73gwQ927L1IitoxKLXYP3SjYdOrHHfTZhRRlFyrorafPk20B3HPD1y2G3qKZME5Jcf3t/HUC13/8tSd++vqFveMUTwAUxSUFI1QekR1+bIze3D9MF2aq6cPvG72CgnldWCFqyRw3lwH8ZMerjTD9ElRO7Gv44wNpC90aASqGfVlz/Rx17srQ57/UU26hkhQqUB7dBR71WmzQhHUnblGmVOEw0jhbV1n9OlXUDCIRGaNV5Jp43N516fN7JmnTHdfp7Hgy0luO4aMhtkLL8Bi3bUWYvzh5Mn1dTxrL6QmGuRhGL/TiTTxRoEdTszSaq9GR0NGA3KdkOz3hqSV3MIDhQ5IVX/Ivx3umBti2es2h4eZby7x8br1rkf7Mo90AqC8aQ3sJeNzqFRu+vSANAQe3PL7l0HGOAdwDCeZYvNKeoZp1Qfs6Aipndh86HmFRi0LAnEO47wsqM6cdfjh3jBPUzhZy7nvlUfFsamED1VQt6aISHVymXZ/B2aCtIG8AI8xfobj2d3en1wWVhOeHELKmLQ1s211s88comkv4UCwWyF787mJdYXtNfhKAXVqnKTq8QZvGAGGOfaTo5pGZ/PwbUCr5+DPr/1J92JNHr9aOl/F3iI5+O1nfybsGxoimvZ3ViWSluDITw3P37mypheDIPY0tw7+O/5ApbkYw+zpfaUVu32Pi98+defdUhEpZkRFq0aqyNh9FuL9hpYbEm6iwi0z2REd09ZmyENEbuhjDWzKvZXTqKYaBIr3tt5kuPtQBZFvEUwHt60vfCNu41XsksH9Ij1BMMz1Y0OOunHNShFIP5868g5zeXmuLwL9T4b6Q2+KejgAAAABJRU5ErkJggg==">
+          Nginx-keepalived高并发解决方案
+        </h1> <div class="page-slot page-slot-top"><!-- 固定100% * 90px可显示，max-height:90px未见显示-->
+     <ins class="adsbygoogle"
+          style="display:inline-block;width:100%;max-height:90px"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="6625304284"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="theme-vdoing-content content__default"><blockquote><p>在这个互联网飞速发展的时代，人们已经离不开网络，其中网购最为常见。在家网购，上班路上网购，吃饭也购物，下班还网购，2017年双十一天猫支付峰值达到了25.6万笔/秒。热点网站中频繁出现的大量并发如何去解决？</p></blockquote> <h2 id="nginx介绍"><a href="#nginx介绍" class="header-anchor">#</a> Nginx介绍</h2> <p>Nginx (&quot;engine x&quot;) 是一个高性能的 HTTP 和 反向代理 服务器，也是一个 IMAP/POP3/SMTP 代理服务器 。 Nginx 是由 Igor Sysoev 为俄罗斯访问量第二的Rambler.ru 站点开发的，它已经在该站点运行超过四年多了。Igor 将源代码以类BSD许可证的形式发布。自Nginx 发布以来，Nginx 已经因为它的稳定性、丰富的功能集、 示例配置文件和低系统资源的消耗而闻名了。目前国内各大门户网站已经部署了Nginx，如新浪、网易、腾讯。</p> <h2 id="nginx下载和安装"><a href="#nginx下载和安装" class="header-anchor">#</a> Nginx下载和安装</h2> <p>Nginx官网http://nginx.org/</p> <p><img src="https://i.imgur.com/zF2qMn7.png" alt=""></p> <p>Nginx目前已经更新到了1.13.10版本，我们可以直接到官网下载，由于外面服务器大多都使用linux环境作为服务器，所以我们也弄一台linux环境的虚拟机。</p> <p>虚拟机我们已经装好了，IP：192.168.211.129，由于nginx是用C语言写的,而且还支持地址栏重写等功能，所以我们需要安装一下相关的依赖包。</p> <div class="language- extra-class"><pre><code>yum install gcc-c++
+yum install -y pcre pcre-devel
+yum install -y zlib zlib-devel
+yum install -y openssl openssl-devel
+</code></pre></div><p>安装流程如下：</p> <ol><li>我们把刚才从官网下载的Nginx，文件上传到centos的/usr/local/server目录去。</li> <li>紧接着我们在server目录下创建nginx目录 把压缩文件解压，进入解压的文件夹。</li> <li>首先配置nginx安装信息./configure</li> <li>执行编译和安装make &amp;&amp; make install</li></ol> <p>安装流程如下：</p> <div class="language- extra-class"><pre><code>nginx-1.13.10.tar.gz
+[root@localhost server]# tar -xf nginx-1.13.10.tar.gz
+[root@localhost server]# mkdir nginx
+[root@localhost server]# cd nginx-1.13.10
+[root@localhost nginx-1.13.10]# ./configure --prefix=/usr/local/server/nginx
+[root@localhost nginx-1.13.10]# make &amp;&amp; make install
+</code></pre></div><p>上面./configure后面的一些常用参数配置参考如下</p> <div class="language- extra-class"><pre><code>–prefix
+指定部署根目录，默认是/usr/local/nginx.此设置会更改其他配置目录的相对路径
+–sbin-path
+可执行文件的路径，默认为/sbin/nginx
+–conf-path
+配置文件的路径，默认为/conf/nginx.conf
+–pid-path
+pid文件的存放路径，默认存放在/logs/nginx.pid，是一个存放nginx的master进程ID的纯文本文件，刚安装的时候不会生成，nginx启动的时候会自动生成。
+–http-log-path
+access日志存放位置，每个http的请求在结束的时候都会访问的日志。
+–with-ld-opt
+加入第三方链接时需要的参数。编译之后nginx最终的可执行二进制文件是由编译后的目标文件和一些第三方的库链接生成的。如果想要将某个库链接到nginx中，就需要指定–with-ld-opt=目标库名-目标库路径
+–with-debug
+将nginx需要打印debug调试级别日志的代码编译进nginx，这样才可以通过修改配置文件将调试日志打印出来，便于定位服务问题 
+</code></pre></div><p>安装第三方模块</p> <div class="language- extra-class"><pre><code> ./configure --prefix=/usr/local/server/nginx --add-module=/usr/local/server/nginx_module/echo-nginx-module-0.61 --with-debug
+</code></pre></div><p>这时候Nginx已经安全完成，我们进入/usr/local/server/nginx目录查看</p> <div class="language- extra-class"><pre><code>[root@localhost nginx-1.13.10]# cd ../nginx
+[root@localhost nginx]# ls
+conf  html  logs  sbin
+[root@localhost nginx]# 
+</code></pre></div><p>Nginx安装完成后不要忘了防火墙开放80端口</p> <div class="language- extra-class"><pre><code>[root@localhost sbin]# vi /etc/sysconfig/iptables
+# Firewall configuration written by system-config-firewall
+# Manual customization of this file is not recommended.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+[root@localhost sbin]# service iptables restart
+iptables: Setting chains to policy ACCEPT: filter          [  OK  ]
+iptables: Flushing firewall rules:                         [  OK  ]
+iptables: Unloading modules:                               [  OK  ]
+iptables: Applying firewall rules:                         [  OK  ]
+[root@localhost sbin]# 
+</code></pre></div><p>访问http://192.168.211.129</p> <p><img src="https://i.imgur.com/8RdTpwI.png" alt=""></p> <h2 id="nginx常用命令"><a href="#nginx常用命令" class="header-anchor">#</a> Nginx常用命令</h2> <div class="language- extra-class"><pre><code>nginx常用命令  
+	nginx -c /usr/local/server/nginx/conf/nginx.conf  启动nginx(windows下start nginx);  
+	nginx -s quit   停止ngix  
+	nginx -s reload 重新载入nginx(当配置信息发生修改时)  
+	nginx -v 查看版本  
+	nginx -t 查看nginx的配置文件的目录  
+	nginx -h 查看帮助信息  
+</code></pre></div><h2 id="模块介绍"><a href="#模块介绍" class="header-anchor">#</a> 模块介绍</h2> <h3 id="主模块"><a href="#主模块" class="header-anchor">#</a> 主模块</h3> <p>####基本指令 ####</p> <h5 id="daemon"><a href="#daemon" class="header-anchor">#</a> daemon</h5> <p>语法：daemon on | off<br>
+默认值：on<br>
+是否以守护进程的方式运行nginx，守护进程是指脱离终端并且在后头运行的进程，关闭守护进程执行的方式可以让我们方便调试nginx</p> <h5 id="master-process"><a href="#master-process" class="header-anchor">#</a> master_process</h5> <p>语法：on | of 默认on<br>
+是否以master/worker方式进行工作，在实际的环境中 nginx是以一个master进程管理多个worker进程的方式运行的，关闭后 nginx就不会fork出worker子进程来处理请求，而是用master进程自身来处理请求worker_processes number; 默认1，在master/worker运行方式下 worker进程的数目，一般情况下用户要配置与CPU内核数相等的worker进程。</p> <h5 id="error-log"><a href="#error-log" class="header-anchor">#</a> error_log</h5> <p>语法：error_log file [ debug | info | notice | warn | error | crit ]</p> <h5 id="include"><a href="#include" class="header-anchor">#</a> include</h5> <p>语法：include file | *
+默认值：none
+你可以包含一些其他的配置文件来完成你想要的功能。<br>
+0.4.4版本以后，include指令已经能够支持文件通配符：</p> <div class="language- extra-class"><pre><code>include vhosts/*.conf;
+</code></pre></div><h5 id="pid"><a href="#pid" class="header-anchor">#</a> pid</h5> <p>语法：pid file<br>
+默认值：编译时指定<br></p> <div class="language- extra-class"><pre><code>pid /var/log/nginx.pid;
+</code></pre></div><p>指定pid文件，可以使用kill命令来发送相关信号，例如你如果想重新读取配置文件，则可以使用：</p> <div class="language- extra-class"><pre><code>kill -HUP `cat /var/log/nginx.pid`
+</code></pre></div><h5 id="user"><a href="#user" class="header-anchor">#</a> user</h5> <p>语法：user user [group]<br>
+默认值：nobody nobody<br>
+如果主进程以root运行，Nginx将会调用setuid()/setgid()来设置用户/组，如果没有指定组，那么将使用与用户名相同的组，默认情况下会使用nobody用户与nobody组（或者nogroup），或者在编译时指定的--user=USER和--group=GROUP的值。</p> <h4 id="worker-processes"><a href="#worker-processes" class="header-anchor">#</a> worker_processes</h4> <p>语法：worker_processes number 默认值：1</p> <p>由于以下几点原因，Nginx可能需要运行不止一个进程
+·使用了SMP（对称多处理技术）。
+·当服务器在磁盘I/O出现瓶颈时为了减少响应时间。
+·当使用select()/poll()限制了每个进程的最大连接数时。
+在事件模块这一章中我们将使用worker_processes和worker_connections来计算理论最大连接数（max_clients）：
+max_clients = worker_processes * worker_connections</p> <h3 id="nginx处理http的核心功能模块"><a href="#nginx处理http的核心功能模块" class="header-anchor">#</a> Nginx处理HTTP的核心功能模块</h3> <p>####基本指令 ####</p> <h5 id="alias"><a href="#alias" class="header-anchor">#</a> alias</h5> <p>语法：alias file-path|directory-path;<br>
+默认值：no<br>
+使用字段：location
+这个指令指定一个路径使用某个某个，注意它可能类似于root，但是document root没有改变，请求只是使用了别名目录的文件。</p> <div class="language- extra-class"><pre><code>location  /i/ {
+  alias  /spool/w3/images/;
+}
+</code></pre></div><p>上个例子总，请求&quot;/i/top.gif&quot;将返回这个文件: &quot;/spool/w3/images/top.gif&quot;。
+Alias同样可以用于带正则表达式的location，如：</p> <div class="language- extra-class"><pre><code>location ~ ^/download/(.*)$ {
+  alias /home/website/files/$1;
+}
+</code></pre></div><h5 id="keepalive-timeout"><a href="#keepalive-timeout" class="header-anchor">#</a> keepalive_timeout</h5> <p>语法：keepalive_timeout [ time ] [ time ]<br>
+默认值：keepalive_timeout 75<br>
+使用字段：http, server, location<br>
+参数的第一个值指定了客户端与服务器长连接的超时时间，超过这个时间，服务器将关闭连接。<br>
+参数的第二个值（可选）指定了应答头中Keep-Alive: timeout=time的time值，这个值可以使一些浏览器知道什么时候关闭连接，以便服务器不用重复关闭，如果不指定这个参数，nginx不会在应答头中发送Keep-Alive信息。（但这并不是指怎样将一个连接“Keep-Alive”）<br>
+参数的这两个值可以不相同<br>
+下面列出了一些服务器如何处理包含Keep-Alive的应答头：<br>
+·MSIE和Opera将Keep-Alive: timeout=N头忽略。<br>
+·MSIE保持一个连接大约60-65秒，然后发送一个TCP RST。<br>
+·Opera将一直保持一个连接处于活动状态。<br>
+·Mozilla将一个连接在N的基础上增加大约1-10秒。
+·Konqueror保持一个连接大约N秒。<br></p> <h5 id="listen"><a href="#listen" class="header-anchor">#</a> listen</h5> <p>语法(0.7.x)：listen address:port [ default [ backlog=num | rcvbuf=size | sndbuf=size | accept_filter=filter | deferred | bind | ssl ] ]<br>
+语法(0.8.x)：listen address:port [ default_server [ backlog=num | rcvbuf=size | sndbuf=size | accept_filter=filter | deferred | bind | ssl ] ]<br>
+默认值：listen 80<br>
+使用字段：server<br>
+listen指令指定了server{...}字段中可以被访问到的ip地址及端口号，可以只指定一个ip，一个端口，或者一个可解析的服务器名。<br></p> <div class="language- extra-class"><pre><code>listen 127.0.0.1:8000;
+listen 127.0.0.1;
+listen 8000;
+listen *:8000;
+listen localhost:8000;
+</code></pre></div><h5 id="location"><a href="#location" class="header-anchor">#</a> location</h5> <p>语法：location [=|~|~<em>|^~|@] /uri/ { ... }<br>
+默认值：no<br>
+使用字段：server<br>
+这个参数根据URI的不同需求来进行配置，可以使用字符串与正则表达式匹配，如果要使用正则表达式，你必须指定下列前缀：<br>
+1、~</em> 不区分大小写。<br>
+2、~ 区分大小写。<br></p> <div class="language- extra-class"><pre><code>location  = / {
+  # 只匹配 / 的查询.
+  [ configuration A ]
+}
+location  / {
+  # 匹配任何以 / 开始的查询，但是正则表达式与一些较长的字符串将被首先匹配。
+  [ configuration B ]
+}
+location ^~ /images/ {
+  # 匹配任何以 /images/ 开始的查询并且停止搜索，不检查正则表达式。
+  [ configuration C ]
+}
+location ~* \.(gif|jpg|jpeg)$ {
+  # 匹配任何以gif, jpg, or jpeg结尾的文件，但是所有 /images/ 目录的请求将在Configuration C中处理。
+  [ configuration D ]
+}
+</code></pre></div><h5 id="resolver-timeout"><a href="#resolver-timeout" class="header-anchor">#</a> resolver_timeout</h5> <p>语法：resolver_timeout time<br>
+默认值：30s<br>
+使用字段：http, server, location<br>
+解析超时时间。如：<br>
+resolver_timeout 5s;<br></p> <h5 id="root"><a href="#root" class="header-anchor">#</a> root</h5> <p>语法：root path<br>
+默认值：root html<br>
+使用字段：http, server, location ,location中的if字段
+请求到达后的文件根目录。<br>
+下例中：</p> <div class="language- extra-class"><pre><code>location  /i/ {
+  root  /spool/w3;
+}
+</code></pre></div><p>如果请求&quot;/i/top.gif&quot;文件，nginx将转到&quot;/spool/w3/i/top.gif&quot;文件。你可以在参数中使用变量。<br>
+注意：在请求中root会添加这个location到它的值后面，即&quot;/i/top.gif&quot;并不会请求&quot;/spool/w3/top.gif&quot;文件，如果要实现上述类似于apache alias的功能，可以使用alias指令。</p> <h5 id="server"><a href="#server" class="header-anchor">#</a> server</h5> <p>语法：server {...}<br>
+默认值：no<br>
+使用字段：http<br>
+server字段包含虚拟主机的配置。<br>
+没有明确的机制来分开基于域名（请求中的主机头）和基于IP的虚拟主机。<br>
+可以通过listen指令来指定必须连接到这个server块的所有地址和端口，并且在server_name指令中可以指定所有的域名。</p> <h5 id="server-name"><a href="#server-name" class="header-anchor">#</a> server_name</h5> <p>语法：server_name name [... ]<br>
+默认值：server_name hostname<br>
+使用字段：server<br>
+这个指令有两个作用：<br>
+·将HTTP请求的主机头与在nginx配置文件中的server{...}字段中指定的参数进行匹配，并且找出第一个匹配结果。这就是如何定义虚拟主机的方法，域名遵循下述优先级规则：<br>
+1、完整匹配的名称。<br>
+2、名称开始于一个文件通配符：<em>.example.com。<br>
+3、名称结束于一个文件通配符：www.example.</em>。<br>
+4、使用正则表达式的名称。<br>
+如果没有匹配的结果，nginx配置文件将安装以下优先级使用[#server server { ... }]字段：<br>
+1、listen指令被标记为default的server字段。<br>
+2、第一个出现listen（或者默认的listen 80）的server字段。<br>
+·如果server_name_in_redirect被设置，这个指令将用于设置HTTP重定向的服务器名。<br>
+例：<br></p> <div class="language- extra-class"><pre><code>server {
+  server_name   example.com  www.example.com;
+}
+</code></pre></div><p>第一个名称为服务器的基本名称，默认名称为机器的hostname。
+当然，可以使用文件通配符：</p> <div class="language- extra-class"><pre><code>server {
+  server_name   example.com  *.example.com  www.example.*;
+}
+</code></pre></div><p>上述例子中的前两个名称可以合并为一个：</p> <div class="language- extra-class"><pre><code>server {
+  server_name  .example.com;
+}
+</code></pre></div><p>同样可以使用正则表达式。名称前面加“~”：</p> <div class="language- extra-class"><pre><code>server {
+  server_name   www.example.com   ~^www\d+\.example\.com$;
+}
+</code></pre></div><h3 id="http负载均衡模块-http-upstream"><a href="#http负载均衡模块-http-upstream" class="header-anchor">#</a> HTTP负载均衡模块（HTTP Upstream）</h3> <h4 id="摘要"><a href="#摘要" class="header-anchor">#</a> 摘要</h4> <p>这个模块为后端的服务器提供简单的负载均衡（轮询（round-robin）和连接IP（client IP））
+如下例：</p> <div class="language- extra-class"><pre><code>upstream backend  {
+  server backend1.example.com weight=5;
+  server backend2.example.com:8080;
+  server unix:/tmp/backend3;
+}
+ 
+server {
+  location / {
+    proxy_pass  http://backend;
+  }
+}
+</code></pre></div><h4 id="指令"><a href="#指令" class="header-anchor">#</a> 指令</h4> <h5 id="ip-hash"><a href="#ip-hash" class="header-anchor">#</a> ip_hash</h5> <p>语法：ip_hash<br>
+默认值：none<br>
+使用字段：upstream<br>
+这个指令将基于客户端连接的IP地址来分发请求。<br>
+哈希的关键字是客户端的C类网络地址，这个功能将保证这个客户端请求总是被转发到一台服务器上，但是如果这台服务器不可用，那么请求将转发到另外的服务器上，这将保证某个客户端有很大概率总是连接到一台服务器。<br>
+无法将权重（weight）与ip_hash联合使用来分发连接。如果有某台服务器不可用，你必须标记其为“down”，如下例:<br></p> <div class="language- extra-class"><pre><code>upstream backend {
+  ip_hash;
+  server   backend1.example.com;
+  server   backend2.example.com;
+  server   backend3.example.com  down;
+  server   backend4.example.com;
+}
+</code></pre></div><h5 id="server-2"><a href="#server-2" class="header-anchor">#</a> server</h5> <p>语法：server name [parameters]<br>
+默认值：none<br>
+使用字段：upstream<br>
+指定后端服务器的名称和一些参数，可以使用域名，IP，端口，或者unix socket。如果指定为域名，则首先将其解析为IP。<br>
+·weight = NUMBER - 设置服务器权重，默认为1。<br>
+·max_fails = NUMBER - 在一定时间内（这个时间在fail_timeout参数中设置）检查这个服务器是否可用时产生的最多失败请求数，默认为1，将其设置为0可以关闭检查，这些错误在proxy_next_upstream或fastcgi_next_upstream（404错误不会使max_fails增加）中定义。<br>
+·fail_timeout = TIME - 在这个时间内产生了max_fails所设置大小的失败尝试连接请求后这个服务器可能不可用，同样它指定了服务器不可用的时间（在下一次尝试连接请求发起之前），默认为10秒，fail_timeout与前端响应时间没有直接关系，不过可以使用proxy_connect_timeout和proxy_read_timeout来控制。<br>
+·down - 标记服务器处于离线状态，通常和ip_hash一起使用。<br>
+·backup - (0.6.7或更高)如果所有的非备份服务器都宕机或繁忙，则使用本服务器（无法和ip_hash指令搭配使用）。<br>
+示例配置</p> <div class="language- extra-class"><pre><code>upstream  backend  {
+  server   backend1.example.comweight=5;
+  server   127.0.0.1:8080  max_fails=3  fail_timeout=30s;
+  server   unix:/tmp/backend3;
+}
+</code></pre></div><p>注意：如果你只使用一台上游服务器，nginx将设置一个内置变量为1，即max_fails和fail_timeout参数不会被处理。<br>
+结果：如果nginx不能连接到上游，请求将丢失。
+解决：使用多台上游服务器。<br></p> <h5 id="upstream"><a href="#upstream" class="header-anchor">#</a> upstream</h5> <p>语法：upstream name { ... }<br>
+默认值：none<br>
+使用字段：http<br>
+这个字段设置一群服务器，可以将这个字段放在proxy_pass和fastcgi_pass指令中作为一个单独的实体，它们可以可以是监听不同端口的服务器，并且也可以是同时监听TCP和Unix socket的服务器。
+服务器可以指定不同的权重，默认为1。
+示例配置<br></p> <div class="language- extra-class"><pre><code>upstream backend {
+  server backend1.example.com weight=5;
+  server 127.0.0.1:8080   max_fails=3  fail_timeout=30s;
+  server unix:/tmp/backend3;
+}
+</code></pre></div><h3 id="http访问控制模块-http-access"><a href="#http访问控制模块-http-access" class="header-anchor">#</a> HTTP访问控制模块（HTTP Access）</h3> <h4 id="摘要-2"><a href="#摘要-2" class="header-anchor">#</a> 摘要</h4> <p>这个模块提供简单的基于主机的访问控制。<br>
+ngx_http_access_module这个模块可以详细的检查客户端IP，并且按顺序执行第一条匹配的规则。<br>
+如下例：</p> <div class="language- extra-class"><pre><code>location / {
+  deny192.168.1.1;
+  allow   192.168.1.0/24;
+  allow   10.1.1.0/16;
+  denyall;
+}
+</code></pre></div><p>上面的例子中仅允许192.168.1.0/24和10.1.1.0/16网络段访问，但192.168.1.1是个例外。<br>
+如果要实施很多复杂的规则，那么最好使用GeoIP module模块。</p> <h4 id="指令-2"><a href="#指令-2" class="header-anchor">#</a> 指令</h4> <h5 id="allow"><a href="#allow" class="header-anchor">#</a> allow</h5> <p>语法：allow [ address | CIDR | all ]<br>
+默认值：no<br>
+使用字段：http, server, location, limit_except
+指令指定了允许访问的IP或网络段。</p> <h5 id="deny"><a href="#deny" class="header-anchor">#</a> deny</h5> <p>语法：deny [ address | CIDR | all ]<br>
+默认值：no<br>
+使用字段：http, server, location, limit_except
+指令指定了拒绝访问的IP或网络段。<br>
+·提示和技巧<br>
+HttpAccess模块可以和error_page指令搭配使用来重定向一个未经验证的访问请求。<br></p> <div class="language- extra-class"><pre><code>error_page  403  http://example.com/forbidden.html;
+location / {
+  deny192.168.1.1;
+  allow   192.168.1.0/24;
+  allow   10.1.1.0/16;
+  denyall;
+}
+</code></pre></div><h2 id="nginx-tomcat实现集群"><a href="#nginx-tomcat实现集群" class="header-anchor">#</a> Nginx+tomcat实现集群</h2> <p>当我们网站并发量高的时候，一台tomcat无法承受大量并发，可以考虑Nginx+Tomcat集群来实现。咱们这就做一个集群演示。</p> <h3 id="配置说明"><a href="#配置说明" class="header-anchor">#</a> 配置说明</h3> <p><img src="https://i.imgur.com/rMiFftn.jpg" alt=""></p> <p>我们这里准备3台tomcat，端口分别是8081、8082、8083，针对同一个域名，每次用Nginx实现不同的转发，分别在每个tomcat的webapps目录下创建ROOT目录，并创建index.html，分别在html的body里标记1/2/3以示区分。</p> <h3 id="nginx搭建图片服务器"><a href="#nginx搭建图片服务器" class="header-anchor">#</a> Nginx搭建图片服务器</h3> <p>针对任何站点，几乎都要访问图片，而一个网页里面几乎有好些张图片，这时候会占据大量tomcat连接，造成大量并发，我们可以通过Nginx配置直接访问硬盘里的图片，绕开tomcat。</p> <p>我们在D盘创建一个nginx_images/images目录，然后在images目录放入一些图片，再在nginx的nginx.conf配置里配置一个虚拟机来访问。</p> <div class="language- extra-class"><pre><code>server {
+    listen       80;
+    server_name  localhost;
+
+	#所有带有images访问的路径直接取D盘:/nginx_images目录下查找
+    location / {
+        root D:/nginx_images;
+    }
+ }
+</code></pre></div><h2 id="keepalived-nginx-集群解决单点故障"><a href="#keepalived-nginx-集群解决单点故障" class="header-anchor">#</a> keepalived+nginx 集群解决单点故障</h2> <p>再牛逼的软件我们也不能保证它一定不挂，为了防止Nginx挂了导致整个服务无法使用的灾难发生，我们这里可以考虑使用Keepalived+Nginx集群实现高可用。</p> <h3 id="keepalived介绍"><a href="#keepalived介绍" class="header-anchor">#</a> keepalived介绍</h3> <p>Keepalived 是一种高性能的服务器高可用或热备解决方案，Keepalived 可以用来防止服务器单点故障的发生，通过配合 Nginx 可以实现 web 前端服务的高可用。<br>
+Keepalived 以 VRRP 协议为实现基础，用 VRRP 协议来实现高可用性(HA)。VRRP(Virtual Router Redundancy Protocol)协议是用于实现路由器冗余的协议，VRRP 协议将两台或多台路由器设备虚拟成一个设备，对外提供虚拟路由器 IP(一个或多个)，而在路由器组内部，如果实际拥有这个对外 IP 的路由器如果工作正常的话就是 MASTER，或者是通过算法选举产生，MASTER 实现针对虚拟路由器 IP 的各种网络功能，如 ARP 请求，ICMP，以及数据的转发等；其他设备不拥有该虚拟 IP，状态是 BACKUP，除了接收 MASTER 的VRRP 状态通告信息外，不执行对外的网络功能。当主机失效时，BACKUP 将接管原先 MASTER 的网络功能。<br>
+VRRP 协议使用多播数据来传输 VRRP 数据，VRRP 数据使用特殊的虚拟源 MAC 地址发送数据而不是自身网卡的 MAC 地址，VRRP 运行时只有 MASTER 路由器定时发送 VRRP 通告信息，表示 MASTER 工作正常以及虚拟路由器 IP(组)，BACKUP 只接收 VRRP 数据，不发送数据，如果一定时间内没有接收到 MASTER 的通告信息，各 BACKUP 将宣告自己成为 MASTER，发送通告信息，重新进行 MASTER 选举状态。</p> <h3 id="方案介绍"><a href="#方案介绍" class="header-anchor">#</a> 方案介绍</h3> <div class="language- extra-class"><pre><code>	VIP          |     IP           |       主机名     |      主从
+                 | 192.168.211.129  |       keep129   |     master
+ 192.168.211.131 |------------------|-----------------|--------------
+                 | 192.168.211.130  |      keep130    |    backup
+</code></pre></div><h3 id="nginx安装"><a href="#nginx安装" class="header-anchor">#</a> Nginx安装</h3> <p>在129和130虚拟机上安装nginx，安装过程参考前面学的Nginx。</p> <h3 id="keepalived安装"><a href="#keepalived安装" class="header-anchor">#</a> keepalived安装</h3> <p>将文件上传到服务器，然后解压安装</p> <div class="language- extra-class"><pre><code># cd /usr/local/server
+# tar -zxvf keepalived-1.2.18.tar.gz
+# cd keepalived-1.2.18
+# ./configure --prefix=/usr/local/server/keepalived
+# make &amp;&amp; make install
+</code></pre></div><p>将 keepalived 安装成 Linux 系统服务<br>
+因为没有使用 keepalived 的默认路径安装（默认是/usr/local）,安装完成之后，需要做一些工作复制默认配置文件到默认路径</p> <div class="language- extra-class"><pre><code># mkdir /etc/keepalived
+# cp /usr/local/server/keepalived/etc/keepalived/keepalived.conf /etc/keepalived/
+复制 keepalived 服务脚本到默认的地址
+# cp /usr/local/server/keepalived/etc/rc.d/init.d/keepalived /etc/init.d/
+# cp /usr/local/server/keepalived/etc/sysconfig/keepalived /etc/sysconfig/
+# ln -s /usr/local/sbin/keepalived /usr/sbin/
+# ln -s /usr/local/server/keepalived/sbin/keepalived /sbin/
+设置 keepalived 服务开机启动
+# chkconfig keepalived on
+</code></pre></div><h3 id="配置主节点"><a href="#配置主节点" class="header-anchor">#</a> 配置主节点</h3> <p>找到129注解keepalived的配置文件keepalived.conf</p> <div class="language- extra-class"><pre><code>global_defs {
+   router_id keep129;
+}
+
+vrrp_script chk_nginx {
+ script &quot;/etc/keepalived/nginx_check.sh&quot;
+ interval 2
+ weight -20
+}
+</code></pre></div><p>​	
+vrrp_instance VI_1 {
+state MASTER
+interface eth0
+virtual_router_id 129
+mcast_src_ip 192.168.211.129
+priority 100
+nopreempt
+advert_int 1
+authentication {
+auth_type PASS
+auth_pass 1111
+}</p> <div class="language- extra-class"><pre><code>    track_script {
+	 chk_nginx
+    }
+    virtual_ipaddress {
+        192.168.211.131
+    }
+}
+</code></pre></div><h3 id="配置从节点"><a href="#配置从节点" class="header-anchor">#</a> 配置从节点</h3> <p>找到130注解keepalived的配置文件keepalived.conf</p> <div class="language- extra-class"><pre><code>global_defs {
+   router_id keep130
+}
+
+vrrp_script chk_nginx {
+ script &quot;/etc/keepalived/nginx_check.sh&quot;
+ interval 2
+ weight -20
+}
+
+vrrp_instance VI_1 {
+    state BACKUP
+    interface eth2
+    virtual_router_id 130
+    priority 90
+    mcast_src_ip 192.168.211.130
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    track_script {
+ 	chk_nginx
+    }
+    virtual_ipaddress {
+        192.168.211.131
+    }
+}
+</code></pre></div><h3 id="nginx检查脚本"><a href="#nginx检查脚本" class="header-anchor">#</a> Nginx检查脚本</h3> <p>在/etc/keepalived目录下创建nginx_check.sh文件</p> <div class="language- extra-class"><pre><code>#!/bin/bash
+A=`ps -C nginx –no-header |wc -l`
+if [ $A -eq 0 ];then
+    /usr/local/server/nginx/sbin/nginx
+    sleep 2
+    if [ `ps -C nginx --no-header |wc -l` -eq 0 ];then
+        killall keepalived
+    fi
+fi
+</code></pre></div><h3 id="配置说明-2"><a href="#配置说明-2" class="header-anchor">#</a> 配置说明</h3> <div class="language- extra-class"><pre><code>global_defs {
+ ## keepalived 自带的邮件提醒需要开启 sendmail 服务。建议用独立的监控或第三方 SMTP 
+ router_id keep130 ## 标识本节点的字条串，通常为 hostname
+}
+## keepalived 会定时执行脚本并对脚本执行的结果进行分析，动态调整 vrrp_instance 的优先级。如果
+脚本执行结果为 0，并且 weight 配置的值大于 0，则优先级相应的增加。如果脚本执行结果非 0，并且 weight
+配置的值小于 0，则优先级相应的减少。其他情况，维持原本配置的优先级，即配置文件中 priority 对应
+的值。
+vrrp_script chk_nginx {
+ script &quot;/etc/keepalived/nginx_check.sh&quot; ## 检测 nginx 状态的脚本路径
+ interval 2 ## 检测时间间隔
+ weight -20 ## 如果条件成立，权重-20
+}
+## 定义虚拟路由，VI_1 为虚拟路由的标示符，自己定义名称
+vrrp_instance VI_1 {
+ state MASTER ## 主节点为 MASTER，对应的备份节点为 BACKUP
+ interface eth1 ## 绑定虚拟 IP 的网络接口，与本机 IP 地址所在的网络接口相同，我的是 eth1
+ virtual_router_id 130 ## 虚拟路由的 ID 号，两个节点设置必须一样，可选 IP 最后一段使用, 相
+同的 VRID 为一个组，他将决定多播的 MAC 地址
+ mcast_src_ip 192.168.211.130 ## 本机 IP 地址
+ priority 100 ## 节点优先级，值范围 0-254，MASTER 要比 BACKUP 高
+nopreempt ## 优先级高的设置 nopreempt 解决异常恢复后再次抢占的问题
+advert_int 1 ## 组播信息发送间隔，两个节点设置必须一样，默认 1s
+## 设置验证信息，两个节点必须一致
+authentication {
+ auth_type PASS
+ auth_pass 1111 ## 真实生产，按需求对应该过来
+}
+## 将 track_script 块加入 instance 配置块
+ track_script {
+ chk_nginx ## 执行 Nginx 监控的服务
+}
+## 虚拟 IP 池, 两个节点设置必须一样
+ virtual_ipaddress {
+ 	192.168.199.131 ## 虚拟 ip，可以定义多个
+ }
+}
+</code></pre></div><p>为并发量高的优质网站量身定制高可用的并发解决方案nginx+keepalived</p></div></div> <div class="page-slot page-slot-bottom"><!-- 横向自适应 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="6620245489"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="page-edit"><!----> <!----> <div class="last-updated"><span class="prefix">上次更新:</span> <span class="time">2021/06/24, 15:20:06</span></div></div> <div class="page-nav-wapper"><div class="page-nav-centre-wrap"><a href="/xpai/pages/471f32/" class="page-nav-centre page-nav-centre-prev"><div class="tooltip">Java设计模式概念</div></a> <a href="/xpai/pages/85a08b/" class="page-nav-centre page-nav-centre-next"><div class="tooltip">分布式架构SpringSecurity+CAS实现单点登录</div></a></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/xpai/pages/471f32/" class="prev">Java设计模式概念</a></span> <span class="next"><a href="/xpai/pages/85a08b/">分布式架构SpringSecurity+CAS实现单点登录</a>→
+      </span></p></div></div></div> <div class="article-list"><div class="article-title"><a href="/xpai/archives/" class="iconfont icon-bi">最近更新</a></div> <div class="article-wrapper"><dl><dd>01</dd> <dt><a href="/xpai/pages/f8e1fa/"><div>开发者如何在技术+管理的路上越走越宽？</div></a> <span>06-27</span></dt></dl><dl><dd>02</dd> <dt><a href="/xpai/pages/37e0fd/"><div>RocketMQ生产者流程篇</div></a> <span>06-27</span></dt></dl><dl><dd>03</dd> <dt><a href="/xpai/pages/a81d2c/"><div>你对线程隔离的理解</div></a> <span>06-27</span></dt></dl> <dl><dd></dd> <dt><a href="/xpai/archives/" class="more">更多文章&gt;</a></dt></dl></div></div></main></div> <div class="footer"><div class="icons"><a href="mailto:619147075@qq.com" title="发邮件" target="_blank" class="iconfont icon-youjian"></a><a href="https://github.com/Ezuy-Lee/" title="GitHub" target="_blank" class="iconfont icon-github"></a><a href="https://music.163.com/#/playlist?id=966099149" title="听音乐" target="_blank" class="iconfont icon-erji"></a></div> 
+  Theme by
+  <a href="https://github.com/xugaoyi/vuepress-theme-vdoing" target="_blank" title="本站主题">Vdoing</a> 
+    | Copyright © 2020-2021
+    <span>Rainze-Lee | <a href="https://github.com/Ezuy-Lee/Rainze-Blog/blob/main/LICENSE" target="_blank">MIT License</a></span></div> <div class="buttons"><div title="返回顶部" class="button blur go-to-top iconfont icon-fanhuidingbu" style="display:none;"></div> <div title="去评论" class="button blur go-to-comment iconfont icon-pinglun" style="display:none;"></div> <div title="主题模式" class="button blur theme-mode-but iconfont icon-zhuti"><ul class="select-box" style="display:none;"><li class="iconfont icon-zidong">
+          跟随系统
+        </li><li class="iconfont icon-rijianmoshi">
+          浅色模式
+        </li><li class="iconfont icon-yejianmoshi">
+          深色模式
+        </li><li class="iconfont icon-yuedu">
+          阅读模式
+        </li></ul></div></div> <!----> <!----> <div class="custom-html-window custom-html-window-rb" style="display:;"><div class="custom-wrapper"><i class="close-but">×</i> <div><!-- 固定160*160px -->
+      <ins class="adsbygoogle"
+          style="display:inline-block;max-width:160px;max-height:160px"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="8377369658"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </div></div></div></div><div class="global-ui"><div></div></div></div>
+    <script src="/xpai/assets/js/app.463a16ef.js" defer></script><script src="/xpai/assets/js/2.86da3580.js" defer></script><script src="/xpai/assets/js/96.b0673c60.js" defer></script>
+  </body>
+</html>

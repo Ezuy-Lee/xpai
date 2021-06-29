@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kubernetes 副本机制篇 | x·π</title>
+    <meta name="generator" content="VuePress 1.8.0">
+    <link rel="icon" href="/xpai/img/favicon.ico">
+    <script data-ad-client="ca-pub-7828333725993554" async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta name="description" content="x·π学院，为开发者量身制作的技术博客和知识库管理平台,简洁至上,专注于前后端技术学习与总结。">
+    <meta name="keywords" content="xpai,x,pai,java,前端博客,个人技术博客,前端,前端开发,前端框架,web前端,前端面试题,技术文档,学习,面试,JavaScript,js,ES6,TypeScript,vue,python,css3,html5,Node,git,github,markdown">
+    <meta name="baidu-site-verification" content="7F55weZDDc">
+    <meta name="theme-color" content="#11a8cd">
+    <link rel="preload" href="/xpai/assets/css/0.styles.79838e76.css" as="style"><link rel="preload" href="/xpai/assets/js/app.463a16ef.js" as="script"><link rel="preload" href="/xpai/assets/js/2.86da3580.js" as="script"><link rel="preload" href="/xpai/assets/js/146.6d807a23.js" as="script"><link rel="prefetch" href="/xpai/assets/js/10.7ee6e0f7.js"><link rel="prefetch" href="/xpai/assets/js/100.ca97340e.js"><link rel="prefetch" href="/xpai/assets/js/101.9fe98dac.js"><link rel="prefetch" href="/xpai/assets/js/102.c21bb621.js"><link rel="prefetch" href="/xpai/assets/js/103.8a98d2bf.js"><link rel="prefetch" href="/xpai/assets/js/104.32ba745b.js"><link rel="prefetch" href="/xpai/assets/js/105.e97d1142.js"><link rel="prefetch" href="/xpai/assets/js/106.0eee2433.js"><link rel="prefetch" href="/xpai/assets/js/107.f18ecd30.js"><link rel="prefetch" href="/xpai/assets/js/108.ed1584c8.js"><link rel="prefetch" href="/xpai/assets/js/109.e3f69cfb.js"><link rel="prefetch" href="/xpai/assets/js/11.d966c9a1.js"><link rel="prefetch" href="/xpai/assets/js/110.c1ae9e32.js"><link rel="prefetch" href="/xpai/assets/js/111.a543b13d.js"><link rel="prefetch" href="/xpai/assets/js/112.559c21bb.js"><link rel="prefetch" href="/xpai/assets/js/113.fc113adc.js"><link rel="prefetch" href="/xpai/assets/js/114.50d5e5a7.js"><link rel="prefetch" href="/xpai/assets/js/115.d86f7ff2.js"><link rel="prefetch" href="/xpai/assets/js/116.0b3801f6.js"><link rel="prefetch" href="/xpai/assets/js/117.a56de7c9.js"><link rel="prefetch" href="/xpai/assets/js/118.1eaab9b4.js"><link rel="prefetch" href="/xpai/assets/js/119.d692ea2a.js"><link rel="prefetch" href="/xpai/assets/js/12.8fe99824.js"><link rel="prefetch" href="/xpai/assets/js/120.1bb73ce4.js"><link rel="prefetch" href="/xpai/assets/js/121.ad4fac1b.js"><link rel="prefetch" href="/xpai/assets/js/122.71447b1b.js"><link rel="prefetch" href="/xpai/assets/js/123.24d55eec.js"><link rel="prefetch" href="/xpai/assets/js/124.30b0b26e.js"><link rel="prefetch" href="/xpai/assets/js/125.3c3c7cbd.js"><link rel="prefetch" href="/xpai/assets/js/126.4b8fcd6e.js"><link rel="prefetch" href="/xpai/assets/js/127.9aed11fd.js"><link rel="prefetch" href="/xpai/assets/js/128.ccbfe4a0.js"><link rel="prefetch" href="/xpai/assets/js/129.fe318607.js"><link rel="prefetch" href="/xpai/assets/js/13.b8cb0a32.js"><link rel="prefetch" href="/xpai/assets/js/130.d27b4321.js"><link rel="prefetch" href="/xpai/assets/js/131.54d5c00c.js"><link rel="prefetch" href="/xpai/assets/js/132.d8986010.js"><link rel="prefetch" href="/xpai/assets/js/133.f861411c.js"><link rel="prefetch" href="/xpai/assets/js/134.286bfa2b.js"><link rel="prefetch" href="/xpai/assets/js/135.c3db6ed4.js"><link rel="prefetch" href="/xpai/assets/js/136.a5d2ce64.js"><link rel="prefetch" href="/xpai/assets/js/137.550a2277.js"><link rel="prefetch" href="/xpai/assets/js/138.8a99894a.js"><link rel="prefetch" href="/xpai/assets/js/139.ddbbc94f.js"><link rel="prefetch" href="/xpai/assets/js/14.dcefa034.js"><link rel="prefetch" href="/xpai/assets/js/140.3049d182.js"><link rel="prefetch" href="/xpai/assets/js/141.664f5c5d.js"><link rel="prefetch" href="/xpai/assets/js/142.7cee8107.js"><link rel="prefetch" href="/xpai/assets/js/143.f5ec918e.js"><link rel="prefetch" href="/xpai/assets/js/144.22fd0a33.js"><link rel="prefetch" href="/xpai/assets/js/145.c2333593.js"><link rel="prefetch" href="/xpai/assets/js/147.29a3cf6f.js"><link rel="prefetch" href="/xpai/assets/js/148.bd6ee5eb.js"><link rel="prefetch" href="/xpai/assets/js/149.7dc1d1ae.js"><link rel="prefetch" href="/xpai/assets/js/15.2a4d0706.js"><link rel="prefetch" href="/xpai/assets/js/150.f40432ae.js"><link rel="prefetch" href="/xpai/assets/js/151.a919b3cc.js"><link rel="prefetch" href="/xpai/assets/js/152.4fa71eca.js"><link rel="prefetch" href="/xpai/assets/js/153.817a4e74.js"><link rel="prefetch" href="/xpai/assets/js/154.2813e444.js"><link rel="prefetch" href="/xpai/assets/js/155.15e81052.js"><link rel="prefetch" href="/xpai/assets/js/156.fa34a481.js"><link rel="prefetch" href="/xpai/assets/js/157.b08b85b0.js"><link rel="prefetch" href="/xpai/assets/js/158.d5371c5a.js"><link rel="prefetch" href="/xpai/assets/js/159.dd75b5f2.js"><link rel="prefetch" href="/xpai/assets/js/16.100620ac.js"><link rel="prefetch" href="/xpai/assets/js/160.127a3238.js"><link rel="prefetch" href="/xpai/assets/js/161.bb763729.js"><link rel="prefetch" href="/xpai/assets/js/162.3f583d73.js"><link rel="prefetch" href="/xpai/assets/js/163.45f9c3c5.js"><link rel="prefetch" href="/xpai/assets/js/164.b517304e.js"><link rel="prefetch" href="/xpai/assets/js/165.78f3e227.js"><link rel="prefetch" href="/xpai/assets/js/166.52ab083a.js"><link rel="prefetch" href="/xpai/assets/js/167.3ff08448.js"><link rel="prefetch" href="/xpai/assets/js/168.b76ede0e.js"><link rel="prefetch" href="/xpai/assets/js/169.e7045a07.js"><link rel="prefetch" href="/xpai/assets/js/17.edd38bb7.js"><link rel="prefetch" href="/xpai/assets/js/170.28967c99.js"><link rel="prefetch" href="/xpai/assets/js/171.c3b3d33f.js"><link rel="prefetch" href="/xpai/assets/js/172.8efd4d5f.js"><link rel="prefetch" href="/xpai/assets/js/173.e8929a24.js"><link rel="prefetch" href="/xpai/assets/js/174.69fd1c95.js"><link rel="prefetch" href="/xpai/assets/js/175.71b34cd8.js"><link rel="prefetch" href="/xpai/assets/js/176.d12259c4.js"><link rel="prefetch" href="/xpai/assets/js/177.43021615.js"><link rel="prefetch" href="/xpai/assets/js/178.2110b762.js"><link rel="prefetch" href="/xpai/assets/js/179.3ee7894a.js"><link rel="prefetch" href="/xpai/assets/js/18.60ad374d.js"><link rel="prefetch" href="/xpai/assets/js/180.0203c68e.js"><link rel="prefetch" href="/xpai/assets/js/181.9de24c6a.js"><link rel="prefetch" href="/xpai/assets/js/182.8bd7b605.js"><link rel="prefetch" href="/xpai/assets/js/183.7b9777ab.js"><link rel="prefetch" href="/xpai/assets/js/184.06c8f682.js"><link rel="prefetch" href="/xpai/assets/js/185.533fd089.js"><link rel="prefetch" href="/xpai/assets/js/186.da02af0d.js"><link rel="prefetch" href="/xpai/assets/js/187.0ad9bbf4.js"><link rel="prefetch" href="/xpai/assets/js/188.680a1397.js"><link rel="prefetch" href="/xpai/assets/js/189.2b70c6ba.js"><link rel="prefetch" href="/xpai/assets/js/19.37ca1303.js"><link rel="prefetch" href="/xpai/assets/js/190.72b2201b.js"><link rel="prefetch" href="/xpai/assets/js/191.452f27d6.js"><link rel="prefetch" href="/xpai/assets/js/192.77a42070.js"><link rel="prefetch" href="/xpai/assets/js/193.5df63776.js"><link rel="prefetch" href="/xpai/assets/js/194.60512671.js"><link rel="prefetch" href="/xpai/assets/js/195.dfee0b35.js"><link rel="prefetch" href="/xpai/assets/js/196.b089bf1c.js"><link rel="prefetch" href="/xpai/assets/js/197.3231ab2f.js"><link rel="prefetch" href="/xpai/assets/js/198.d7cc85e4.js"><link rel="prefetch" href="/xpai/assets/js/199.49b9190b.js"><link rel="prefetch" href="/xpai/assets/js/20.49b1af17.js"><link rel="prefetch" href="/xpai/assets/js/200.312f11fb.js"><link rel="prefetch" href="/xpai/assets/js/201.22e1bc76.js"><link rel="prefetch" href="/xpai/assets/js/202.df0ea0e5.js"><link rel="prefetch" href="/xpai/assets/js/203.8e21b7a0.js"><link rel="prefetch" href="/xpai/assets/js/204.2ae4a97a.js"><link rel="prefetch" href="/xpai/assets/js/205.5cbe7da4.js"><link rel="prefetch" href="/xpai/assets/js/206.d5e490e9.js"><link rel="prefetch" href="/xpai/assets/js/207.f34c5ce1.js"><link rel="prefetch" href="/xpai/assets/js/208.5fdf7bf3.js"><link rel="prefetch" href="/xpai/assets/js/209.b028c8d0.js"><link rel="prefetch" href="/xpai/assets/js/21.db66bdd8.js"><link rel="prefetch" href="/xpai/assets/js/210.75dfc456.js"><link rel="prefetch" href="/xpai/assets/js/211.76bdfd3a.js"><link rel="prefetch" href="/xpai/assets/js/212.6f693c8e.js"><link rel="prefetch" href="/xpai/assets/js/213.78008b66.js"><link rel="prefetch" href="/xpai/assets/js/214.0289290f.js"><link rel="prefetch" href="/xpai/assets/js/215.fea6ffaf.js"><link rel="prefetch" href="/xpai/assets/js/216.232c62bc.js"><link rel="prefetch" href="/xpai/assets/js/217.7eb2090b.js"><link rel="prefetch" href="/xpai/assets/js/218.40542780.js"><link rel="prefetch" href="/xpai/assets/js/219.0a908ea4.js"><link rel="prefetch" href="/xpai/assets/js/22.ad9dc733.js"><link rel="prefetch" href="/xpai/assets/js/220.b0417a42.js"><link rel="prefetch" href="/xpai/assets/js/221.24ec4a64.js"><link rel="prefetch" href="/xpai/assets/js/222.5cd49c8f.js"><link rel="prefetch" href="/xpai/assets/js/223.c502ecd6.js"><link rel="prefetch" href="/xpai/assets/js/224.1de749c7.js"><link rel="prefetch" href="/xpai/assets/js/225.f3d0e310.js"><link rel="prefetch" href="/xpai/assets/js/226.65550f73.js"><link rel="prefetch" href="/xpai/assets/js/227.dda125e0.js"><link rel="prefetch" href="/xpai/assets/js/228.5a206fc6.js"><link rel="prefetch" href="/xpai/assets/js/229.d4421e9e.js"><link rel="prefetch" href="/xpai/assets/js/23.3428586b.js"><link rel="prefetch" href="/xpai/assets/js/230.c74da9c1.js"><link rel="prefetch" href="/xpai/assets/js/231.9a0a1cf7.js"><link rel="prefetch" href="/xpai/assets/js/232.e63a0e1f.js"><link rel="prefetch" href="/xpai/assets/js/233.df08bcaa.js"><link rel="prefetch" href="/xpai/assets/js/234.96ed772e.js"><link rel="prefetch" href="/xpai/assets/js/235.3ec201f2.js"><link rel="prefetch" href="/xpai/assets/js/236.57013513.js"><link rel="prefetch" href="/xpai/assets/js/237.914aea19.js"><link rel="prefetch" href="/xpai/assets/js/238.a202c8a7.js"><link rel="prefetch" href="/xpai/assets/js/239.9f593f79.js"><link rel="prefetch" href="/xpai/assets/js/24.1ec99cff.js"><link rel="prefetch" href="/xpai/assets/js/240.8e44d3ca.js"><link rel="prefetch" href="/xpai/assets/js/241.4ba1e308.js"><link rel="prefetch" href="/xpai/assets/js/242.8529cc75.js"><link rel="prefetch" href="/xpai/assets/js/243.5004c9b3.js"><link rel="prefetch" href="/xpai/assets/js/244.a2119850.js"><link rel="prefetch" href="/xpai/assets/js/245.8c643ead.js"><link rel="prefetch" href="/xpai/assets/js/246.c0fba80d.js"><link rel="prefetch" href="/xpai/assets/js/247.000e839a.js"><link rel="prefetch" href="/xpai/assets/js/248.2d135521.js"><link rel="prefetch" href="/xpai/assets/js/249.3422287d.js"><link rel="prefetch" href="/xpai/assets/js/25.117dc1ab.js"><link rel="prefetch" href="/xpai/assets/js/250.f329da47.js"><link rel="prefetch" href="/xpai/assets/js/251.51e2aad1.js"><link rel="prefetch" href="/xpai/assets/js/252.9cb3d88b.js"><link rel="prefetch" href="/xpai/assets/js/253.9da51af7.js"><link rel="prefetch" href="/xpai/assets/js/254.3165fc09.js"><link rel="prefetch" href="/xpai/assets/js/255.cb4062a4.js"><link rel="prefetch" href="/xpai/assets/js/256.d79d6f90.js"><link rel="prefetch" href="/xpai/assets/js/257.12fb4db7.js"><link rel="prefetch" href="/xpai/assets/js/258.e1515c48.js"><link rel="prefetch" href="/xpai/assets/js/259.0a09c73f.js"><link rel="prefetch" href="/xpai/assets/js/26.7b6f1292.js"><link rel="prefetch" href="/xpai/assets/js/260.54480a98.js"><link rel="prefetch" href="/xpai/assets/js/261.0545fd8e.js"><link rel="prefetch" href="/xpai/assets/js/262.ff374c70.js"><link rel="prefetch" href="/xpai/assets/js/263.ee5f0590.js"><link rel="prefetch" href="/xpai/assets/js/264.483d0ef8.js"><link rel="prefetch" href="/xpai/assets/js/265.4da521dc.js"><link rel="prefetch" href="/xpai/assets/js/266.aaeb58f1.js"><link rel="prefetch" href="/xpai/assets/js/267.aca23f83.js"><link rel="prefetch" href="/xpai/assets/js/268.f3b2d4a1.js"><link rel="prefetch" href="/xpai/assets/js/269.b4409f77.js"><link rel="prefetch" href="/xpai/assets/js/27.4abb37d7.js"><link rel="prefetch" href="/xpai/assets/js/270.d76a14f2.js"><link rel="prefetch" href="/xpai/assets/js/271.8242cd05.js"><link rel="prefetch" href="/xpai/assets/js/272.799398e1.js"><link rel="prefetch" href="/xpai/assets/js/273.90aee646.js"><link rel="prefetch" href="/xpai/assets/js/274.f8b4ca70.js"><link rel="prefetch" href="/xpai/assets/js/275.c2ee0bd0.js"><link rel="prefetch" href="/xpai/assets/js/276.742fe95c.js"><link rel="prefetch" href="/xpai/assets/js/277.d6040ffc.js"><link rel="prefetch" href="/xpai/assets/js/278.ab5d4432.js"><link rel="prefetch" href="/xpai/assets/js/279.188e5df9.js"><link rel="prefetch" href="/xpai/assets/js/28.1c1fe9b2.js"><link rel="prefetch" href="/xpai/assets/js/280.e9b9f629.js"><link rel="prefetch" href="/xpai/assets/js/281.a83c892f.js"><link rel="prefetch" href="/xpai/assets/js/282.2fab9b7f.js"><link rel="prefetch" href="/xpai/assets/js/283.1971678f.js"><link rel="prefetch" href="/xpai/assets/js/284.9e42daa0.js"><link rel="prefetch" href="/xpai/assets/js/285.cd747472.js"><link rel="prefetch" href="/xpai/assets/js/286.8e468c09.js"><link rel="prefetch" href="/xpai/assets/js/287.22c9485f.js"><link rel="prefetch" href="/xpai/assets/js/288.34101bfd.js"><link rel="prefetch" href="/xpai/assets/js/289.d12821df.js"><link rel="prefetch" href="/xpai/assets/js/29.ab9e2995.js"><link rel="prefetch" href="/xpai/assets/js/290.73ca9fde.js"><link rel="prefetch" href="/xpai/assets/js/291.0e9a3b5a.js"><link rel="prefetch" href="/xpai/assets/js/292.ddd9db4e.js"><link rel="prefetch" href="/xpai/assets/js/293.5151011b.js"><link rel="prefetch" href="/xpai/assets/js/294.787e0f5a.js"><link rel="prefetch" href="/xpai/assets/js/295.6be83c2e.js"><link rel="prefetch" href="/xpai/assets/js/296.179e3bae.js"><link rel="prefetch" href="/xpai/assets/js/297.980f652e.js"><link rel="prefetch" href="/xpai/assets/js/298.827ba7c3.js"><link rel="prefetch" href="/xpai/assets/js/299.c7715539.js"><link rel="prefetch" href="/xpai/assets/js/3.cab0040e.js"><link rel="prefetch" href="/xpai/assets/js/30.bb98e080.js"><link rel="prefetch" href="/xpai/assets/js/300.3a5e31e3.js"><link rel="prefetch" href="/xpai/assets/js/301.652d80ac.js"><link rel="prefetch" href="/xpai/assets/js/302.388b4851.js"><link rel="prefetch" href="/xpai/assets/js/303.5f95420a.js"><link rel="prefetch" href="/xpai/assets/js/304.9543ba37.js"><link rel="prefetch" href="/xpai/assets/js/305.0a4d2b3d.js"><link rel="prefetch" href="/xpai/assets/js/306.16988031.js"><link rel="prefetch" href="/xpai/assets/js/307.4d7a759d.js"><link rel="prefetch" href="/xpai/assets/js/308.27e25b6a.js"><link rel="prefetch" href="/xpai/assets/js/309.8471a949.js"><link rel="prefetch" href="/xpai/assets/js/31.68e0e25d.js"><link rel="prefetch" href="/xpai/assets/js/310.e9b36953.js"><link rel="prefetch" href="/xpai/assets/js/311.5463ec0c.js"><link rel="prefetch" href="/xpai/assets/js/312.334ad312.js"><link rel="prefetch" href="/xpai/assets/js/313.7ce59ee7.js"><link rel="prefetch" href="/xpai/assets/js/314.24652da0.js"><link rel="prefetch" href="/xpai/assets/js/315.2cfa659a.js"><link rel="prefetch" href="/xpai/assets/js/316.6e19c913.js"><link rel="prefetch" href="/xpai/assets/js/317.4f08fa8e.js"><link rel="prefetch" href="/xpai/assets/js/318.c184fba2.js"><link rel="prefetch" href="/xpai/assets/js/319.d94e39eb.js"><link rel="prefetch" href="/xpai/assets/js/32.ef68da65.js"><link rel="prefetch" href="/xpai/assets/js/320.49cf32bc.js"><link rel="prefetch" href="/xpai/assets/js/321.c285126f.js"><link rel="prefetch" href="/xpai/assets/js/322.588c7bd1.js"><link rel="prefetch" href="/xpai/assets/js/323.9116b884.js"><link rel="prefetch" href="/xpai/assets/js/324.2ea5c8c8.js"><link rel="prefetch" href="/xpai/assets/js/325.5010ca7b.js"><link rel="prefetch" href="/xpai/assets/js/326.eb06b2a3.js"><link rel="prefetch" href="/xpai/assets/js/327.adc38e90.js"><link rel="prefetch" href="/xpai/assets/js/328.db03c4e6.js"><link rel="prefetch" href="/xpai/assets/js/329.acb93377.js"><link rel="prefetch" href="/xpai/assets/js/33.5d570484.js"><link rel="prefetch" href="/xpai/assets/js/330.646a6c29.js"><link rel="prefetch" href="/xpai/assets/js/331.b8782f0b.js"><link rel="prefetch" href="/xpai/assets/js/332.f0db34b4.js"><link rel="prefetch" href="/xpai/assets/js/333.fa51fd3e.js"><link rel="prefetch" href="/xpai/assets/js/334.60fc8f8d.js"><link rel="prefetch" href="/xpai/assets/js/335.e7cedbc9.js"><link rel="prefetch" href="/xpai/assets/js/336.23ebc07f.js"><link rel="prefetch" href="/xpai/assets/js/337.359d68de.js"><link rel="prefetch" href="/xpai/assets/js/338.5b6b6766.js"><link rel="prefetch" href="/xpai/assets/js/339.fc66f3d7.js"><link rel="prefetch" href="/xpai/assets/js/34.a5238ebc.js"><link rel="prefetch" href="/xpai/assets/js/340.7cfc7432.js"><link rel="prefetch" href="/xpai/assets/js/341.4304cbba.js"><link rel="prefetch" href="/xpai/assets/js/342.ffa46baf.js"><link rel="prefetch" href="/xpai/assets/js/343.ce0a15f1.js"><link rel="prefetch" href="/xpai/assets/js/344.3324ad6c.js"><link rel="prefetch" href="/xpai/assets/js/345.141f5109.js"><link rel="prefetch" href="/xpai/assets/js/346.607ca4f2.js"><link rel="prefetch" href="/xpai/assets/js/347.7caeef96.js"><link rel="prefetch" href="/xpai/assets/js/348.f0775e41.js"><link rel="prefetch" href="/xpai/assets/js/349.a001db3d.js"><link rel="prefetch" href="/xpai/assets/js/35.59de4997.js"><link rel="prefetch" href="/xpai/assets/js/350.77cc6653.js"><link rel="prefetch" href="/xpai/assets/js/351.34fe0651.js"><link rel="prefetch" href="/xpai/assets/js/36.ff92d3c8.js"><link rel="prefetch" href="/xpai/assets/js/37.4351ce5f.js"><link rel="prefetch" href="/xpai/assets/js/38.9eca4ff4.js"><link rel="prefetch" href="/xpai/assets/js/39.265a5d9a.js"><link rel="prefetch" href="/xpai/assets/js/4.10fa6d3b.js"><link rel="prefetch" href="/xpai/assets/js/40.3635d39d.js"><link rel="prefetch" href="/xpai/assets/js/41.4f91b146.js"><link rel="prefetch" href="/xpai/assets/js/42.2b713cb9.js"><link rel="prefetch" href="/xpai/assets/js/43.2c34c804.js"><link rel="prefetch" href="/xpai/assets/js/44.8f191f8f.js"><link rel="prefetch" href="/xpai/assets/js/45.4f628df8.js"><link rel="prefetch" href="/xpai/assets/js/46.1c757b3d.js"><link rel="prefetch" href="/xpai/assets/js/47.2961b598.js"><link rel="prefetch" href="/xpai/assets/js/48.54ffe40c.js"><link rel="prefetch" href="/xpai/assets/js/49.e0e4765d.js"><link rel="prefetch" href="/xpai/assets/js/5.ab0b3475.js"><link rel="prefetch" href="/xpai/assets/js/50.2de67866.js"><link rel="prefetch" href="/xpai/assets/js/51.e1ce0592.js"><link rel="prefetch" href="/xpai/assets/js/52.21f1bb15.js"><link rel="prefetch" href="/xpai/assets/js/53.557503f1.js"><link rel="prefetch" href="/xpai/assets/js/54.98566dfe.js"><link rel="prefetch" href="/xpai/assets/js/55.960d350f.js"><link rel="prefetch" href="/xpai/assets/js/56.e59740f6.js"><link rel="prefetch" href="/xpai/assets/js/57.f5af4efc.js"><link rel="prefetch" href="/xpai/assets/js/58.3db80afc.js"><link rel="prefetch" href="/xpai/assets/js/59.fb2fac89.js"><link rel="prefetch" href="/xpai/assets/js/6.41101de3.js"><link rel="prefetch" href="/xpai/assets/js/60.ef88b46d.js"><link rel="prefetch" href="/xpai/assets/js/61.331d64e6.js"><link rel="prefetch" href="/xpai/assets/js/62.c5cbce0e.js"><link rel="prefetch" href="/xpai/assets/js/63.6dbec697.js"><link rel="prefetch" href="/xpai/assets/js/64.46384523.js"><link rel="prefetch" href="/xpai/assets/js/65.5ff2ae14.js"><link rel="prefetch" href="/xpai/assets/js/66.97f80a65.js"><link rel="prefetch" href="/xpai/assets/js/67.bf1f054e.js"><link rel="prefetch" href="/xpai/assets/js/68.8e84d8ae.js"><link rel="prefetch" href="/xpai/assets/js/69.a3026fe1.js"><link rel="prefetch" href="/xpai/assets/js/7.7b35634d.js"><link rel="prefetch" href="/xpai/assets/js/70.40196887.js"><link rel="prefetch" href="/xpai/assets/js/71.0058aceb.js"><link rel="prefetch" href="/xpai/assets/js/72.7b3cc131.js"><link rel="prefetch" href="/xpai/assets/js/73.cd93e827.js"><link rel="prefetch" href="/xpai/assets/js/74.1600d2c6.js"><link rel="prefetch" href="/xpai/assets/js/75.4662b401.js"><link rel="prefetch" href="/xpai/assets/js/76.0163c641.js"><link rel="prefetch" href="/xpai/assets/js/77.d30ad138.js"><link rel="prefetch" href="/xpai/assets/js/78.70e29d3d.js"><link rel="prefetch" href="/xpai/assets/js/79.d7dd87f6.js"><link rel="prefetch" href="/xpai/assets/js/8.5f0e5018.js"><link rel="prefetch" href="/xpai/assets/js/80.e15cdd35.js"><link rel="prefetch" href="/xpai/assets/js/81.d7722150.js"><link rel="prefetch" href="/xpai/assets/js/82.8db1dc2d.js"><link rel="prefetch" href="/xpai/assets/js/83.8cdd8e3d.js"><link rel="prefetch" href="/xpai/assets/js/84.be3bbb89.js"><link rel="prefetch" href="/xpai/assets/js/85.bd4fb17d.js"><link rel="prefetch" href="/xpai/assets/js/86.8132e8a6.js"><link rel="prefetch" href="/xpai/assets/js/87.eef138b7.js"><link rel="prefetch" href="/xpai/assets/js/88.6a955e9d.js"><link rel="prefetch" href="/xpai/assets/js/89.35fe37ae.js"><link rel="prefetch" href="/xpai/assets/js/9.8b0545db.js"><link rel="prefetch" href="/xpai/assets/js/90.c663c19c.js"><link rel="prefetch" href="/xpai/assets/js/91.1b5a38b0.js"><link rel="prefetch" href="/xpai/assets/js/92.db3ae417.js"><link rel="prefetch" href="/xpai/assets/js/93.d5e4a4c0.js"><link rel="prefetch" href="/xpai/assets/js/94.295d99d0.js"><link rel="prefetch" href="/xpai/assets/js/95.49a70622.js"><link rel="prefetch" href="/xpai/assets/js/96.b0673c60.js"><link rel="prefetch" href="/xpai/assets/js/97.529dda13.js"><link rel="prefetch" href="/xpai/assets/js/98.b7c5d802.js"><link rel="prefetch" href="/xpai/assets/js/99.f0302d8a.js">
+    <link rel="stylesheet" href="/xpai/assets/css/0.styles.79838e76.css">
+  </head>
+  <body class="theme-mode-light">
+    <div id="app" data-server-rendered="true"><div class="theme-container sidebar-open have-rightmenu"><header class="navbar blur"><div title="目录" class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/xpai/" class="home-link router-link-active"><img src="/xpai/img/logo.png" alt="x·π" class="logo"> <span class="site-name can-hide">x·π</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/xpai/" class="nav-link">首页</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="后端" class="dropdown-title"><a href="/xpai/back_end/" class="link-title">后端</a> <span class="title" style="display:none;">后端</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/6d04efbdfa185c88916a6edec2b5bec9/" class="nav-link">Java基础篇</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/6b89cf0a450c5012bb4bdc12eea6bf40/" class="nav-link">Java框架篇</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/5f77f3ea97b75a5c9ffb0c5f1d7e3a72/" class="nav-link">CVS版本控制</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/70b389/" class="nav-link">数据库和缓存</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/8a0e5f/" class="nav-link">设计模式和架构</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/78189d/" class="nav-link">容器化和中间件</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/6d75fa6409b55e52a52a870a48f217fe/" class="nav-link">Linux运维和测试</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/1d539d/" class="nav-link">大数据和云计算</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/41fde4/" class="nav-link">工具和环境</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="前端" class="dropdown-title"><a href="/xpai/web/" class="link-title">前端</a> <span class="title" style="display:none;">前端</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/of4wa5/" class="nav-link">前端基础</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/9c53a1/" class="nav-link">前端框架</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/291a73/" class="nav-link">可视化</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/bbf7bd/" class="nav-link">UI设计和产品</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/0c01fa/" class="nav-link">Vue</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="工作" class="dropdown-title"><a href="/xpai/work/" class="link-title">工作</a> <span class="title" style="display:none;">工作</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/236765/" class="nav-link">个人</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/be82e4/" class="nav-link">公司</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="工具箱" class="dropdown-title"><a href="/xpai/tool/" class="link-title">工具箱</a> <span class="title" style="display:none;">工具箱</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/d9f31f/" class="nav-link">在线工具</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/a9fdaa/" class="nav-link">后端工具</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/2910b4/" class="nav-link">前端工具</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="导航" class="dropdown-title"><a href="/xpai/navigation/" class="link-title">导航</a> <span class="title" style="display:none;">导航</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/a0fb53/" class="nav-link">后端学习</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/c0ac49/" class="nav-link">前端学习</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/2e2565/" class="nav-link">软件资源</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="更多" class="dropdown-title"><a href="/xpai/more/" class="link-title">更多</a> <span class="title" style="display:none;">更多</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/284202/" class="nav-link">学习阅读</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/96d03e/" class="nav-link">面试经验</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/34a617/" class="nav-link">心情杂谈</a></li><li class="dropdown-item"><!----> <a href="/xpai/friends/" class="nav-link">友情链接</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="索引" class="dropdown-title"><a href="/xpai/archives/" class="link-title">索引</a> <span class="title" style="display:none;">索引</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/categories/" class="nav-link">分类</a></li><li class="dropdown-item"><!----> <a href="/xpai/tags/" class="nav-link">标签</a></li><li class="dropdown-item"><!----> <a href="/xpai/archives/" class="nav-link">归档</a></li></ul></div></div><div class="nav-item"><a href="/xpai/about/" class="nav-link">关于</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar" style="display:none;"><div class="blogger"><img src="https://cdn.jsdelivr.net/gh/Ezuy-Lee/RainzeDrawingBed/media/blogger-avatar.png"> <div class="blogger-info"><h3>雨小泽</h3> <span>一个北漂95后！正在潜心研究前端和Java后端技术，一边学习一边积累经验</span></div></div> <nav class="nav-links"><div class="nav-item"><a href="/xpai/" class="nav-link">首页</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="后端" class="dropdown-title"><a href="/xpai/back_end/" class="link-title">后端</a> <span class="title" style="display:none;">后端</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/6d04efbdfa185c88916a6edec2b5bec9/" class="nav-link">Java基础篇</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/6b89cf0a450c5012bb4bdc12eea6bf40/" class="nav-link">Java框架篇</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/5f77f3ea97b75a5c9ffb0c5f1d7e3a72/" class="nav-link">CVS版本控制</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/70b389/" class="nav-link">数据库和缓存</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/8a0e5f/" class="nav-link">设计模式和架构</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/78189d/" class="nav-link">容器化和中间件</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/6d75fa6409b55e52a52a870a48f217fe/" class="nav-link">Linux运维和测试</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/1d539d/" class="nav-link">大数据和云计算</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/41fde4/" class="nav-link">工具和环境</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="前端" class="dropdown-title"><a href="/xpai/web/" class="link-title">前端</a> <span class="title" style="display:none;">前端</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/of4wa5/" class="nav-link">前端基础</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/9c53a1/" class="nav-link">前端框架</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/291a73/" class="nav-link">可视化</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/bbf7bd/" class="nav-link">UI设计和产品</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/0c01fa/" class="nav-link">Vue</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="工作" class="dropdown-title"><a href="/xpai/work/" class="link-title">工作</a> <span class="title" style="display:none;">工作</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/236765/" class="nav-link">个人</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/be82e4/" class="nav-link">公司</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="工具箱" class="dropdown-title"><a href="/xpai/tool/" class="link-title">工具箱</a> <span class="title" style="display:none;">工具箱</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/d9f31f/" class="nav-link">在线工具</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/a9fdaa/" class="nav-link">后端工具</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/2910b4/" class="nav-link">前端工具</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="导航" class="dropdown-title"><a href="/xpai/navigation/" class="link-title">导航</a> <span class="title" style="display:none;">导航</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/a0fb53/" class="nav-link">后端学习</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/c0ac49/" class="nav-link">前端学习</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/2e2565/" class="nav-link">软件资源</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="更多" class="dropdown-title"><a href="/xpai/more/" class="link-title">更多</a> <span class="title" style="display:none;">更多</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/pages/284202/" class="nav-link">学习阅读</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/96d03e/" class="nav-link">面试经验</a></li><li class="dropdown-item"><!----> <a href="/xpai/pages/34a617/" class="nav-link">心情杂谈</a></li><li class="dropdown-item"><!----> <a href="/xpai/friends/" class="nav-link">友情链接</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="索引" class="dropdown-title"><a href="/xpai/archives/" class="link-title">索引</a> <span class="title" style="display:none;">索引</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/xpai/categories/" class="nav-link">分类</a></li><li class="dropdown-item"><!----> <a href="/xpai/tags/" class="nav-link">标签</a></li><li class="dropdown-item"><!----> <a href="/xpai/archives/" class="nav-link">归档</a></li></ul></div></div><div class="nav-item"><a href="/xpai/about/" class="nav-link">关于</a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Java基础篇</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Java框架篇</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>CVS版本控制</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>数据库和缓存</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>设计模式和架构</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>容器化和中间件</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Linux运维和测试</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/xpai/pages/6d75fa6409b55e52a52a870a48f217fe/" class="sidebar-link">《Linux运维和测试》</a></li><li><a href="/xpai/pages/eea7a7/" class="sidebar-link">Linux文件管理指令</a></li><li><a href="/xpai/pages/17a3aa/" class="sidebar-link">Kubernetes Pod操作篇</a></li><li><a href="/xpai/pages/72dcb3/" aria-current="page" class="active sidebar-link">Kubernetes 副本机制篇</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#前言" class="sidebar-link">前言</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#探针" class="sidebar-link">探针</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_1-准备镜像" class="sidebar-link">1.准备镜像</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_2-探针实战" class="sidebar-link">2.探针实战</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_2-3-pod探针描述" class="sidebar-link">2.3 Pod探针描述</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_3-探针总结" class="sidebar-link">3.探针总结</a></li></ul></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#replicationcontroller" class="sidebar-link">ReplicationController</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_1-创建replicationcontroller" class="sidebar-link">1.创建ReplicationController</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_2-修改标签" class="sidebar-link">2.修改标签</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_3-修改pod模版" class="sidebar-link">3.修改Pod模版</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_4-水平缩放pod" class="sidebar-link">4.水平缩放pod</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_5-删除replicationcontroller" class="sidebar-link">5.删除ReplicationController</a></li></ul></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#replicaset" class="sidebar-link">ReplicaSet</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_1-创建replicaset" class="sidebar-link">1.创建ReplicaSet</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_2-replicaset标签选择器" class="sidebar-link">2.ReplicaSet标签选择器</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_3-删除replicaset" class="sidebar-link">3.删除ReplicaSet</a></li></ul></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#daemonset" class="sidebar-link">DaemonSet</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_1-创建daemonset" class="sidebar-link">1.创建DaemonSet</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_2-删除pod和daemonset" class="sidebar-link">2.删除pod和DaemonSet</a></li></ul></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#job" class="sidebar-link">Job</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_1-创建job" class="sidebar-link">1.创建Job</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#_2-job中运行多个pod实例" class="sidebar-link">2.Job中运行多个pod实例</a></li></ul></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#总结" class="sidebar-link">总结</a></li><li class="sidebar-sub-header"><a href="/xpai/pages/72dcb3/#参考" class="sidebar-link">参考</a></li></ul></li><li><a href="/xpai/pages/aa41a0/" class="sidebar-link">Kubernetes服务篇</a></li><li><a href="/xpai/pages/32963d/" class="sidebar-link">Kubernetes入门篇</a></li><li><a href="/xpai/pages/d4fb89/" class="sidebar-link">Prometheus监控告警浅析</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>大数据和云计算</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>工具和环境</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>算法</span> <span class="arrow right"></span></p> <!----></section></li></ul> <div class="sidebar-slot sidebar-slot-bottom"><!-- 正方形 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="3508773082"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div></aside> <div><main class="page"><div class="theme-vdoing-wrapper "><div class="articleInfo-wrap" data-v-1cd794fe><div class="articleInfo" data-v-1cd794fe><ul class="breadcrumbs" data-v-1cd794fe><li data-v-1cd794fe><a href="/xpai/" title="首页" class="iconfont icon-home router-link-active" data-v-1cd794fe></a></li> <li data-v-1cd794fe><a href="/xpai/back_end" title="后端-目录页" data-v-1cd794fe>后端</a></li> <li data-v-1cd794fe><a href="/xpai/back_end/#Linux运维和测试" title="后端#Linux运维和测试" data-v-1cd794fe>Linux运维和测试</a></li> <!----></ul> <div class="info" data-v-1cd794fe><div title="作者" class="author iconfont icon-touxiang" data-v-1cd794fe><a href="https://github.com/Ezuy-Lee" target="_blank" title="作者" class="beLink" data-v-1cd794fe>Rainze-Lee</a></div> <div title="创建时间" class="date iconfont icon-riqi" data-v-1cd794fe><a href="javascript:;" data-v-1cd794fe>2021-06-27</a></div> <!----></div></div></div> <!----> <div class="content-wrapper"><div class="right-menu-wrapper"><div class="right-menu-margin"><div class="right-menu-content"></div></div></div> <h1><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABGpJREFUSA3tVVtoXFUU3fvOI53UlmCaKIFmwEhsE7QK0ipFEdHEKpXaZGrp15SINsXUWvBDpBgQRKi0+KKoFeJHfZA+ED9KKoIU2gYD9UejTW4rVIzm0VSTziPzuNu1z507dibTTjL4U/DAzLn3nL3X2o91ziX6f9wMFdh6Jvbm9nNSV0msViVO6tN1Rm7NMu2OpeJ9lWBUTDxrJbYTS0hInuwciu9eLHlFxCLCZEk3MegsJmZ5K/JD6t7FkFdEvGUo1g7qJoG3MHImqRIn8/nzY1K9UPKKiJmtnUqHVE3Gbuay6vJE/N2FEmuxFjW2nUuE0yQXRRxLiTUAzs36zhZvOXJPdX850EVnnLZkB8prodQoM5JGj7Xk2mvC7JB8tG04Ef5PiXtG0UtxupRQSfTnBoCy554x18yJHI6I+G5Eru4LHmPJZEQsrvPUbMiA8G/WgMK7w7I+ez7++o2ANfbrjvaOl1tFMs+htG3IrZH9/hDX1Pr8Tc0UvH8tcX29KzAgIGcEkINyW5BF9x891hw6VYqgJHEk0huccS7vh3C6gTiODL+26huuBtbct8eZnqLML8PkxGYpuPZBqtqwkSjgc4mB5gbgig5i+y0UDK35LMxXisn9xQtK+nd26gTIHsHe/oblK/b29fUmN/8Y+9jAQrnBp56m1LcDlDp9irKTExSKduXJVWSqdBMA08pEJnEIOB3FPPMybu/oeV8zFeYN3xx576Q6RH+VmplE4ncQV5v+5rzSoyOU7PuEAg8g803PwBJ0CExno/jcMbN8tONYeOmHiuUNryvm3fRUy4tMPVLdAGkUhNWuggGrJcXPv+ouCjz0MKUHz1J2/E8IC9nqTabcxgaBYM0hPhD5Y65FsbxRQKxCQrDjDctW7PUM3HuZunFyifSAqEfuzCp48Il24luWUWZoyJCaPR82jE0+kFA643wRFVni4RYSq3ohJO2pZ7B5dO4xkDWbEpossJPLSrPjYID8rS2UHTlvyNxqIGsg674XJJ7vnh5L7PNwC4hh2sjCI96mzszOTpxLF0T7l88Yz7lAuK6OnL8gXLOnTvpzSb22YG8W7us3jSebFHeeqnXRG1vt+MoUM84LQIBmMsCTAcOauTh0T0l0neQK7m2bLMt2mGxU3HYssS0J2cdv5wljlPsrIuZLAG/2DOZIXgCYT8uMGZN+e2kSirfxZOPCsC0f24nTZzspnVn9VePS1Z5vubmAGGXG8ZFno9Hel0yfA5ZPhF7Dh972BQJ2qCpgH67lmWtBYbvk6sz02wjky2vXyz0XErP/kFB619js1BtwfOV4OPRqOQBjy3Qbk18vigUPPSD5ceHnwck7W9bhAqZdd7SuG7w4/P2F/GaJh8c7e9qgow+Q7cGBo+98WsLkuktFqiZabtXuQTu/Y5ETbR0v7tNSFnvrmu6pjdoan2KjMu8q/Hmj1EfCO2ZGfEIbIXKUlw8qaX9/b2oeSJmFksSeT/Fn0V3nSypChh4Gjh74ybO9aeZ/AN2dwciu2/MhAAAAAElFTkSuQmCC">
+          Kubernetes 副本机制篇
+        </h1> <div class="page-slot page-slot-top"><!-- 固定100% * 90px可显示，max-height:90px未见显示-->
+     <ins class="adsbygoogle"
+          style="display:inline-block;width:100%;max-height:90px"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="6625304284"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="theme-vdoing-content content__default"><h2 id="前言"><a href="#前言" class="header-anchor">#</a> 前言</h2> <p>在上文Kubernetes Pod操作篇介绍了kubernetes的核心组件Pod，本文继续介绍kubernetes的副本机制，正是因为副本机制你的部署能自动保待运行，并且保持健康，无须任何手动干预。</p> <h2 id="探针"><a href="#探针" class="header-anchor">#</a> 探针</h2> <p>kubernetes可以通过存活探针(liveness probe)检查容器是否还在运行。可以为pod中的每个容器单独指定存活探针；如果探测失败，kubernetes将定期执行探针并重新启动容器；<br>
+kubernetes有以下三种探测容器的机制：</p> <ul><li>HTTP GET探针对容器的IP地址执行HTTP GET请求；</li> <li>TCP套接字探针尝试与容器指定端口建立TCP连接；</li> <li>Exec探针在容器内执行任意命令，并检查命令的退出状态码。</li></ul> <h3 id="_1-准备镜像"><a href="#_1-准备镜像" class="header-anchor">#</a> 1.准备镜像</h3> <h4 id="_1-1-准备app-js"><a href="#_1-1-准备app-js" class="header-anchor">#</a> 1.1 准备App.js</h4> <p>为了测试探针的作用，需要准备新的镜像；在之前的服务中稍作改动，在第五个请求之后，给每个请求返回HTTP状态码500(Internal Server Error)，app.js做如下改动：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const http = require('http');
+const os = require('os');
+console.log(&quot;kubia server is starting...&quot;);
+var requestCount = 0;
+var handler = function(request,response){
+    console.log(&quot;Received request from &quot; + request.connection.remoteAddress);
+    requestCount++;
+    if (requestCount &gt; 5) {
+      response.writeHead(500);
+      response.end(&quot;I'm not well. Please restart me!&quot;);
+      return;
+    }
+    response.writeHead(200);
+    response.end(&quot;You've hit &quot; + os.hostname()+&quot;\n&quot;);
+};
+var www = http.createServer(handler);
+www.listen(8080);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><p>requestCount记录请求的次数，大于5次直接返回500状态码，这样探针可以捕获状态码进行服务器重启；</p> <h4 id="_1-2-构建镜像"><a href="#_1-2-构建镜像" class="header-anchor">#</a> 1.2 构建镜像</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>[root@localhost unhealthy]# docker build -t kubia-unhealthy .
+Sending build context to Docker daemon  3.584kB
+Step 1/3 : FROM node:7
+ ---&gt; d9aed20b68a4
+Step 2/3 : ADD app.js /app.js
+ ---&gt; e9e1b44f8f54
+Step 3/3 : ENTRYPOINT [&quot;node&quot;,&quot;app.js&quot;]
+ ---&gt; Running in f58d6ff6bea3
+Removing intermediate container f58d6ff6bea3
+ ---&gt; d36c6390ec66
+Successfully built d36c6390ec66
+Successfully tagged kubia-unhealthy:latest
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><p>通过docker build构建kubia-unhealthy镜像</p> <h4 id="_1-3-推送镜像"><a href="#_1-3-推送镜像" class="header-anchor">#</a> 1.3 推送镜像</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>[root@localhost unhealthy]# docker tag kubia-unhealthy ksfzhaohui/kubia-unhealthy
+[root@localhost unhealthy]# docker login
+Authenticating with existing credentials...
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[root@localhost unhealthy]# docker push ksfzhaohui/kubia-unhealthy
+The push refers to repository [docker.io/ksfzhaohui/kubia-unhealthy]
+40d9e222a827: Pushed 
+......
+latest: digest: sha256:5fb3ebeda7f98818bc07b2b1e3245d6a21014a41153108c4dcf52f2947a4dfd4 size: 2213
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br></div></div><p>首先给镜像附加标签，然后登录<a href="https://hub.docker.com/" target="_blank" rel="noopener noreferrer">docker hub<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，最后推送到<a href="https://hub.docker.com/" target="_blank" rel="noopener noreferrer">docker hub<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>：<br> <img src="https://oscimg.oschina.net/oscnet/up-af7ebd51d0e7e58258006525e237afb472d.png" alt=""></p> <h3 id="_2-探针实战"><a href="#_2-探针实战" class="header-anchor">#</a> 2.探针实战</h3> <h4 id="_2-1-http探针yaml文件"><a href="#_2-1-http探针yaml文件" class="header-anchor">#</a> 2.1 Http探针YAML文件</h4> <p>创建YAML描述文件，指定了一个Http Get存活探针，告诉Kubernetes定期在端口路径下执行Http Get请求，以确定容器是否健康；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: v1
+kind: Pod
+metadata: 
+   name: kubia-liveness
+spec: 
+   containers: 
+   - image: ksfzhaohui/kubia-unhealthy
+     name: kubia
+     livenessProbe: 
+        httpGet: 
+           path: /
+           port: 8080
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><h4 id="_2-2-创建pod"><a href="#_2-2-创建pod" class="header-anchor">#</a> 2.2 创建Pod</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl create -f kubia-liveness-probe.yaml
+pod/kubia-liveness created
+
+[d:\k8s]$ kubectl get pods
+NAME             READY   STATUS              RESTARTS   AGE
+kubia-liveness   0/1     ContainerCreating   0          3s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p>创建名称为kubia-liveness的Pod，查看的RESTARTS为0，隔一段时间再次观察：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl get pods
+NAME             READY   STATUS    RESTARTS   AGE
+kubia-liveness   1/1     Running   2          4m
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>观察可以发现此时的RESTARTS=2，表示重启了2次，因为每次探测都会发送http请求，而服务在接收5次请求之后会返回500状态码，Kubernetes探测之后就会重启容器；</p> <h3 id="_2-3-pod探针描述"><a href="#_2-3-pod探针描述" class="header-anchor">#</a> 2.3 Pod探针描述</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl describe po kubia-liveness
+Name:         kubia-liveness
+......
+    State:          Running
+      Started:      Mon, 23 Dec 2019 15:42:45 +0800
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    137
+      Started:      Mon, 23 Dec 2019 15:41:15 +0800
+      Finished:     Mon, 23 Dec 2019 15:42:42 +0800
+    Ready:          True
+    Restart Count:  2
+    Liveness:       http-get http://:8080/ delay=0s timeout=1s period=10s #success=1 #failure=3
+......
+Events:
+  Type     Reason     Age                    From               Message
+  ----     ------     ----                   ----               -------
+ ......
+  Warning  Unhealthy  85s (x9 over 5m5s)     kubelet, minikube  Liveness probe failed: HTTP probe failed with statuscode: 500
+  Normal   Killing    85s (x3 over 4m45s)    kubelet, minikube  Container kubia failed liveness probe, will be restarted
+......
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br></div></div><p><strong>State</strong>：当前状态是运行中；<br> <strong>Last State</strong>：最后的状态是终止，原因是出现了错误，退出代码为137有特殊的含义：表示该进程由外部信号终止，数字137是两个数字的总和：128+x, 其中x是终止进程的信号编号，这里x=9是SIGKILL的信号编号，意味着这个进程被强行终止；<br> <strong>Restart Count</strong>：重启的次数；<br> <strong>Liveness</strong>：存活探针的附加信息，delay(延迟）、timeout(超时）、period(周期）；大致意思就是开始探测延迟为0秒，探测超时时间为1秒，每隔10秒检测一次，探测连续失败三次重启容器；定义探针时可以自定义这些参数，比如initialDelaySeconds设置初始延迟等；<br> <strong>Events</strong>：列出了发生的事件，比如探测到失败，杀进程，重启容器等；</p> <h3 id="_3-探针总结"><a href="#_3-探针总结" class="header-anchor">#</a> 3.探针总结</h3> <p>首先生产环境运行的pod一定要配置探针；其次探针一定要检查程序的内部，不受外部因数影响比如外部服务，数据库等；最后就是探针应该足够轻量。<br>
+以上方式创建的pod，kubernetes在使用探针发现服务不可能就会重启服务，这项任务由承载pod的节点上的Kubelet执行，在主服务器上运行的Kubernetes Control Plane组件不会参与此过程；但如果节点本身崩溃，由于Kubelet本身运行在节点上，所以如果节点异常终止，它将无法执行任何操作，这时候就需要ReplicationController或类似机制管理pod。</p> <h2 id="replicationcontroller"><a href="#replicationcontroller" class="header-anchor">#</a> ReplicationController</h2> <p>ReplicationController是一种kubernetes资源，可确保它的pod始终保持运行状态；如果pod因任何原因消失(包括<strong>节点崩溃</strong>)，则ReplicationController会重新创建Pod；<br>
+ReplicationController会持续监控正在运行的pod列表，是确保pod的数量始终与其标签选择器匹配，一个ReplicationController有三个主要部分：</p> <ul><li>label selector(标签选择器)，用于确定ReplicationController作用域中有哪些pod；</li> <li>replica count(副本个数)，指定应运行的pod数量；</li> <li>pod template(pod模板)，用于创建新的pod副本。</li></ul> <p>以上三个属性可以随时修改，但是只有副本个数修改对当前pod会有影响，比如当前副本数量减少了，那当前pod有可能会被删除；ReplicationController提供的好处：</p> <ul><li>确保一个pod(或多个pod副本)持续运行，失败重启新pod；</li> <li>集群节点发生故障时，它将为故障节点上运行的所有pod创建副本；</li> <li>轻松实现pod的水平伸缩。</li></ul> <h3 id="_1-创建replicationcontroller"><a href="#_1-创建replicationcontroller" class="header-anchor">#</a> 1.创建ReplicationController</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: v1
+kind: ReplicationController
+metadata: 
+   name: kubia
+spec: 
+   replicas: 3
+   selector: 
+      app: kubia
+   template:
+      metadata: 
+         labels:
+            app: kubia
+      spec: 
+         containers: 
+         - name: kubia
+           image: ksfzhaohui/kubia
+           ports: 
+           - containerPort: 8080
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br></div></div><p>指定了类型为ReplicationController，名称为kubia；replicas设置副本为3，selector为标签选择器，template为pod创建的模版，三个要素都指定了，执行创建命令：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl create -f kubia-rc.yaml
+replicationcontroller/kubia created
+
+[d:\k8s]$ kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+kubia-dssvz   1/1     Running   0          73s
+kubia-krlcr   1/1     Running   0          73s
+kubia-tg29c   1/1     Running   0          73s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><p>创建完之后等一会执行获取pod列表可以发现创建了三个容器，删除其中一个，再次观察：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl delete pod kubia-dssvz
+pod &quot;kubia-dssvz&quot; deleted
+
+[d:\k8s]$ kubectl get pods
+NAME          READY   STATUS        RESTARTS   AGE
+kubia-dssvz   1/1     Terminating   0          2m2s
+kubia-krlcr   1/1     Running       0          2m2s
+kubia-mgz64   1/1     Running       0          11s
+kubia-tg29c   1/1     Running       0          2m2s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><p>被删除的pod结束中，新的pod已经启动，获取有关ReplicationController的信息：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl get rc
+NAME    DESIRED   CURRENT   READY   AGE
+kubia   3         3         3       4m20s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>期望3个副本，当前3个副本，准备好的也是3个，更详细的可以使用describe命令：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl describe rc kubia
+Name:         kubia
+Namespace:    default
+Selector:     app=kubia
+Labels:       app=kubia
+Annotations:  &lt;none&gt;
+Replicas:     3 current / 3 desired
+Pods Status:  3 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+......
+Events:
+  Type    Reason            Age    From                    Message
+  ----    ------            ----   ----                    -------
+  Normal  SuccessfulCreate  5m20s  replication-controller  Created pod: kubia-dssvz
+  Normal  SuccessfulCreate  5m20s  replication-controller  Created pod: kubia-tg29c
+  Normal  SuccessfulCreate  5m20s  replication-controller  Created pod: kubia-krlcr
+  Normal  SuccessfulCreate  3m29s  replication-controller  Created pod: kubia-mgz64
+  Normal  SuccessfulCreate  75s    replication-controller  Created pod: kubia-vwnmf
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br></div></div><p>Replicas显示副本期望数和当前数，Pods Status显示每种状态下的副本数，最后的Events为发生的事件，测试一共删除2个pod，可以看到一个创建了5个pod；</p> <p><strong>注：因为使用的是Minikube，只有一个节点同时充当主节点和工作节点，节点故障无法模拟。</strong></p> <h3 id="_2-修改标签"><a href="#_2-修改标签" class="header-anchor">#</a> 2.修改标签</h3> <p>通过更改pod的标签，可以将它从ReplicationController的作用域中添加或删除：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS    RESTARTS   AGE   LABELS
+kubia-mgz64   1/1     Running   0          27m   app=kubia
+kubia-tg29c   1/1     Running   0          28m   app=kubia
+kubia-vwnmf   1/1     Running   0          24m   app=kubia
+
+[d:\k8s]$ kubectl label pod kubia-mgz64 app=foo --overwrite
+pod/kubia-mgz64 labeled
+
+[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS              RESTARTS   AGE   LABELS
+kubia-4dzw8   0/1     ContainerCreating   0          2s    app=kubia
+kubia-mgz64   1/1     Running             0          27m   app=foo
+kubia-tg29c   1/1     Running             0          29m   app=kubia
+kubia-vwnmf   1/1     Running             0          25m   app=kubia
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br></div></div><p>可以发现初始创建的是三个Pod标签都是app=kubia，当把kubia-mgz64的标签设置为foo之后就脱离了当前ReplicationController的控制，这样ReplicationController控制的副本就变成了2个，所以会里面重新创建一个Pod；脱离控制的Pod还是照常运行，除非我们手动删除；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl delete pod kubia-mgz64
+pod &quot;kubia-mgz64&quot; deleted
+
+[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS    RESTARTS   AGE   LABELS
+kubia-4dzw8   1/1     Running   0          20h   app=kubia
+kubia-tg29c   1/1     Running   0          21h   app=kubia
+kubia-vwnmf   1/1     Running   0          21h   app=kubia
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><h3 id="_3-修改pod模版"><a href="#_3-修改pod模版" class="header-anchor">#</a> 3.修改Pod模版</h3> <p>ReplicationController的pod模板可以随时修改：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl edit rc kubia
+......
+replicationcontroller/kubia edited
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>使用如上命令即可，会弹出文本编辑器，修改Pod模版标签，如下所示：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: kubia
+        type: special
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p>添加新的标签type：special，保存退出即可；修改Pod模版之后并不影响现有的pod，只会影响重新创建的pod：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS    RESTARTS   AGE   LABELS
+kubia-4dzw8   1/1     Running   0          21h   app=kubia
+kubia-tg29c   1/1     Running   0          21h   app=kubia
+kubia-vwnmf   1/1     Running   0          21h   app=kubia
+
+[d:\k8s]$ kubectl delete pod kubia-4dzw8
+pod &quot;kubia-4dzw8&quot; deleted
+
+[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS    RESTARTS   AGE     LABELS
+kubia-6qrxj   1/1     Running   0          2m12s   app=kubia,type=special
+kubia-tg29c   1/1     Running   0          21h     app=kubia
+kubia-vwnmf   1/1     Running   0          21h     app=kubia
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br></div></div><p>删除一个pod，重新创建的pod有了新的标签；</p> <h3 id="_4-水平缩放pod"><a href="#_4-水平缩放pod" class="header-anchor">#</a> 4.水平缩放pod</h3> <p>通过文本编辑器来修改副本数，修改spec.replicas为5</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl edit rc kubia
+replicationcontroller/kubia edited
+
+[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS              RESTARTS   AGE     LABELS
+kubia-6qrxj   1/1     Running             0          9m49s   app=kubia,type=special
+kubia-9crmf   0/1     ContainerCreating   0          4s      app=kubia,type=special
+kubia-qpwbl   0/1     ContainerCreating   0          4s      app=kubia,type=special
+kubia-tg29c   1/1     Running             0          21h     app=kubia
+kubia-vwnmf   1/1     Running             0          21h     app=kubia
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><p>可以发现自动创建了2个Pod，达到副本数5；通过kubectl scale重新修改为3：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl scale rc kubia --replicas=3
+replicationcontroller/kubia scaled
+
+[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS    RESTARTS   AGE   LABELS
+kubia-6qrxj   1/1     Running   0          15m   app=kubia,type=special
+kubia-tg29c   1/1     Running   0          22h   app=kubia
+kubia-vwnmf   1/1     Running   0          21h   app=kubia
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><h3 id="_5-删除replicationcontroller"><a href="#_5-删除replicationcontroller" class="header-anchor">#</a> 5.删除ReplicationController</h3> <p>通过kubectl delete删除ReplicationController时默认会删除pod，但是也可以指定不删除：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl delete rc kubia --cascade=false
+replicationcontroller &quot;kubia&quot; deleted
+
+[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS    RESTARTS   AGE    LABELS
+kubia-6qrxj   1/1     Running   0          103m   app=kubia,type=special
+kubia-tg29c   1/1     Running   0          23h    app=kubia
+kubia-vwnmf   1/1     Running   0          23h    app=kubia
+
+[d:\k8s]$ kubectl get rc kubia
+Error from server (NotFound): replicationcontrollers &quot;kubia&quot; not found
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><p>--cascade=false可以不删除pod，只删除ReplicationController</p> <h2 id="replicaset"><a href="#replicaset" class="header-anchor">#</a> ReplicaSet</h2> <p>ReplicaSet是新一代ReplicationController，将完全替代ReplicationController；ReplicaSet的行为与ReplicationController完全相同，但pod选择器的表达能力更强；</p> <h3 id="_1-创建replicaset"><a href="#_1-创建replicaset" class="header-anchor">#</a> 1.创建ReplicaSet</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: apps/v1
+kind: ReplicaSet
+metadata: 
+   name: kubia
+spec: 
+   replicas: 3
+   selector: 
+      matchLabels: 
+         app: kubia      
+   template:
+      metadata: 
+         labels:
+            app: kubia
+      spec: 
+         containers: 
+         - name: kubia
+           image: ksfzhaohui/kubia
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><p>apiVersion指定为apps/v1：apps表示API组，v1表示实际的API版本；如果是在核心的API组中，API是可以不用指定的，比如之前的ReplicationController只需要指定v1；<br>
+其他定义基本和ReplicationController类似，除了在selector下使用了matchLabels选择器；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl create -f kubia-replicaset.yaml
+replicaset.apps/kubia created
+
+[d:\k8s]$ kubectl get pods --show-labels
+NAME          READY   STATUS    RESTARTS   AGE    LABELS
+kubia-6qrxj   1/1     Running   0          150m   app=kubia,type=special
+kubia-tg29c   1/1     Running   0          24h    app=kubia
+kubia-vwnmf   1/1     Running   0          24h    app=kubia
+
+[d:\k8s]$ kubectl get rs
+NAME    DESIRED   CURRENT   READY   AGE
+kubia   3         3         3       49s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><p>创建完ReplicaSet之后，重新接管了原来的3个pod；更详细的可以使用describe命令：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl describe rs
+Name:         kubia
+Namespace:    default
+Selector:     app=kubia
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+Replicas:     3 current / 3 desired
+Pods Status:  3 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  app=kubia
+  Containers:
+   kubia:
+    Image:        ksfzhaohui/kubia
+    Port:         &lt;none&gt;
+    Host Port:    &lt;none&gt;
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+Events:           &lt;none&gt;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br></div></div><p>可以看到Events事件列表为空，当前的3个pod都是接管的原来已经创建的pod；</p> <h3 id="_2-replicaset标签选择器"><a href="#_2-replicaset标签选择器" class="header-anchor">#</a> 2.ReplicaSet标签选择器</h3> <p>ReplicaSet相对于ReplicationController的主要改进是它更具表达力的标签选择器；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>   selector: 
+      matchExpressions:
+       - key: app
+         operator: In
+         values: 
+            - kubia
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p>ReplicaSet除了可以使用matchLabels，还可以使用功能更强大的matchExpressions；每个表达式都必须包含一个key、一个operator(运算符)、可能还有一个values的列表，运算符可以有：</p> <ul><li>In：Label的值必须与其中一个指定的values匹配；</li> <li>Notln：Label的值与任何指定的values不匹配；</li> <li>Exists：pod必须包含一个指定名称的标签，使用此运算符时，不应指定values字段；</li> <li>DoesNotExist：pod不得包含有指定名称的标签，不应指定values字段；</li></ul> <h3 id="_3-删除replicaset"><a href="#_3-删除replicaset" class="header-anchor">#</a> 3.删除ReplicaSet</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl delete rs kubia
+replicaset.apps &quot;kubia&quot; deleted
+
+[d:\k8s]$ kubectl get pods --show-labels
+No resources found in default namespace.
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p>删除ReplicaSet的同时会删除其管理的pod；</p> <h2 id="daemonset"><a href="#daemonset" class="header-anchor">#</a> DaemonSet</h2> <p>Replicationcontroller和ReplicaSet都用于在kubernetes集群上运行部署特定数量的pod；而DaemonSet可以在所有集群节点上运行一个pod，比如希望在每个节点上运行日志收集器和资源监控器；当然也可以通过节点选择器控制只有哪些节点运行pod；</p> <h3 id="_1-创建daemonset"><a href="#_1-创建daemonset" class="header-anchor">#</a> 1.创建DaemonSet</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: apps/v1
+kind: DaemonSet
+metadata: 
+   name: ssd-monitor
+spec: 
+   selector: 
+      matchLabels: 
+         app: ssd-monitor
+   template:
+      metadata: 
+         labels:
+           app: ssd-monitor
+      spec: 
+         nodeSelector: 
+           disk: ssd
+         containers: 
+         - name: main
+           image: ksfzhaohui/kubia
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br></div></div><p>准备如上创建DaemonSet的YAML文件，以上属性基本和ReplicaSet类似，除了nodeSelector也就是节点选择器，指定了选择disk=ssd标签；<br>
+的节点标签；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl create -f ssd-monitor-daemonset.yaml
+daemonset.apps/ssd-monitor created
+
+[d:\k8s]$ kubectl get ds
+NAME          DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+ssd-monitor   0         0         0       0            0           disk=ssd        24s
+
+[d:\k8s]$ kubectl get pods --show-labels
+No resources found in default namespace.
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><p>创建完之后，并没有给当前节点创建pod，因为当前节点没有指定disk=ssd标签；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl get node
+NAME       STATUS   ROLES    AGE   VERSION
+minikube   Ready    master   8d    v1.17.0
+
+[d:\k8s]$ kubectl label node minikube disk=ssd
+node/minikube labeled
+
+[d:\k8s]$ kubectl get node --show-labels
+NAME       STATUS   ROLES    AGE   VERSION   LABELS
+minikube   Ready    master   8d    v1.17.0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,disk=ssd,gpu=true,kubernetes.io/arch=amd64,kubernetes.io/hostname=minikube,kubernetes.io/os=linux,node-role.kubernetes.io/master=
+
+[d:\k8s]$ kubectl get pods --show-labels
+NAME                READY   STATUS    RESTARTS   AGE   LABELS
+ssd-monitor-84hxd   1/1     Running   0          31s   app=ssd-monitor,controller-revision-hash=5dc77f567d,pod-template-generation=1
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br></div></div><p>首先获取当前节点名称为minikube，然后设置标签disk=ssd，这时候会自动在当前节点创建一个pod，因为在minikube中只有一个节点不好在多个节点上模拟；</p> <h3 id="_2-删除pod和daemonset"><a href="#_2-删除pod和daemonset" class="header-anchor">#</a> 2.删除pod和DaemonSet</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl label node minikube disk=hdd --overwrite
+node/minikube labeled
+
+[d:\k8s]$ kubectl get pods --show-labels
+No resources found in default namespace.
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p>修改节点minkube的标签，可以发现节点上的pod会自动删除，因为不满足节点选择器；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl delete ds ssd-monitor
+daemonset.apps &quot;ssd-monitor&quot; deleted
+
+[d:\k8s]$ kubectl get ds
+No resources found in default namespace.
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p>删除DaemonSet也会一起删除这些pod；</p> <h2 id="job"><a href="#job" class="header-anchor">#</a> Job</h2> <p>ReplicationController、ReplicaSet和DaemonSet会持续运行任务，永远达不到完成态，这些pod中的进程在退出时会重新启动；kubernetes通过Job资源允许你运行一种pod, 该pod在内部进程成功结束时，不重启容器，一旦任务完成，pod就被认为处千完成状态；<br>
+在发生节点故障时，该节点上由Job管理的pod，重新安排到其他节点；如果进程本身异常退出，可以将Job配置为重新启动容器；</p> <h3 id="_1-创建job"><a href="#_1-创建job" class="header-anchor">#</a> 1.创建Job</h3> <p>在创建Job前先准备一个构建在busybox的镜像，该容器将调用sleep 命令两分钟：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>FROM busybox
+ENTRYPOINT echo &quot;$(date) Batch job starting&quot;; sleep 120; echo &quot;$(date) Finished succesfully&quot;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p>此镜像已经推送到<a href="https://hub.docker.com/" target="_blank" rel="noopener noreferrer">docker hub<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>：<br> <img src="https://oscimg.oschina.net/oscnet/up-bf2e9e9f8205968ff7260407fe4a332b71b.png" alt=""></p> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: batch/v1
+kind: Job
+metadata: 
+   name: batch-job
+spec: 
+   template:
+      metadata: 
+         labels:
+           app: batch-job
+      spec: 
+         restartPolicy: OnFailure
+         containers: 
+         - name: main
+           image: ksfzhaohui/batch-job
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br></div></div><p>Job属于batch API组，其中重要的属性是restartPolicy默认为Always表示无限期运行，其他选项还有OnFailure或Never，表示进程失败重启和不重启；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl create -f exporter.yaml
+job.batch/batch-job created
+
+[d:\k8s]$ kubectl get job
+NAME        COMPLETIONS   DURATION   AGE
+batch-job   0/1           7s         8s
+
+[d:\k8s]$ kubectl get pod
+NAME              READY   STATUS    RESTARTS   AGE
+batch-job-7sw68   1/1     Running   0          25s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><p>创建Job，会自动创建一个pod，pod中的进程运行2分钟后会结束：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl get pod
+NAME              READY   STATUS      RESTARTS   AGE
+batch-job-7sw68   0/1     Completed   0          3m1s
+
+[d:\k8s]$ kubectl get job
+NAME        COMPLETIONS   DURATION   AGE
+batch-job   1/1           2m11s      3m12s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p>可以发现pod状态为Completed，同样job的COMPLETIONS同样为完成；</p> <h3 id="_2-job中运行多个pod实例"><a href="#_2-job中运行多个pod实例" class="header-anchor">#</a> 2.Job中运行多个pod实例</h3> <p>作业可以配置为创建多个pod实例，并以并行或串行方式运行它们；可以通过设置completions和parallelism属性来完成；</p> <h4 id="_2-1-顺序运行job-pod"><a href="#_2-1-顺序运行job-pod" class="header-anchor">#</a> 2.1 顺序运行Job pod</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: batch/v1
+kind: Job
+metadata: 
+   name: multi-completion-batch-job
+spec: 
+   completions: 3
+   template:
+      metadata: 
+         labels:
+           app: multi-completion-batch-job
+      spec: 
+         restartPolicy: OnFailure
+         containers: 
+         - name: main
+           image: ksfzhaohui/batch-job
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br></div></div><p>completions设置为3，一个一个的运行3个pod，所有完成整个job完成；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl get pod
+NAME                               READY   STATUS      RESTARTS   AGE
+multi-completion-batch-job-h75j8   0/1     Completed   0          2m19s
+multi-completion-batch-job-wdhnj   1/1     Running     0          15s
+
+[d:\k8s]$ kubectl get job
+NAME                         COMPLETIONS   DURATION   AGE
+multi-completion-batch-job   1/3           2m28s      2m28s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><p>可以看到完成一个pod之后会启动第二pod，所有都运行完之后如下所示：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl get pod
+NAME                               READY   STATUS      RESTARTS   AGE
+multi-completion-batch-job-4vjff   0/1     Completed   0          2m7s
+multi-completion-batch-job-h75j8   0/1     Completed   0          6m16s
+multi-completion-batch-job-wdhnj   0/1     Completed   0          4m12s
+
+[d:\k8s]$ kubectl get job
+NAME                         COMPLETIONS   DURATION   AGE
+multi-completion-batch-job   3/3           6m13s      6m18s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><h4 id="_2-2-并行运行job-pod"><a href="#_2-2-并行运行job-pod" class="header-anchor">#</a> 2.2 并行运行Job pod</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: batch/v1
+kind: Job
+metadata: 
+   name: multi-completion-parallel-batch-job
+spec: 
+   completions: 3
+   parallelism: 2
+   template:
+      metadata: 
+         labels:
+           app: multi-completion-parallel-batch-job
+      spec: 
+         restartPolicy: OnFailure
+         containers: 
+         - name: main
+           image: ksfzhaohui/batch-job
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br></div></div><p>同时设置了completions和parallelism，表示job可以同时运行两个pod，其中任何一个执行完成可以运行第三个pod：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl create -f multi-completion-parallel-batch-job.yaml
+job.batch/multi-completion-parallel-batch-job created
+
+[d:\k8s]$ kubectl get pod
+NAME                                        READY   STATUS              RESTARTS   AGE
+multi-completion-parallel-batch-job-f7wn8   0/1     ContainerCreating   0          3s
+multi-completion-parallel-batch-job-h9s29   0/1     ContainerCreating   0          3s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><h4 id="_2-3-限制job-pod完成任务的时间"><a href="#_2-3-限制job-pod完成任务的时间" class="header-anchor">#</a> 2.3 限制Job pod完成任务的时间</h4> <p>在pod配置中设置activeDeadlineSeconds属性，可以限制pod的时间；如果pod运行时间超过此时间，系统将尝试终止pod, 并将Job标记为失败；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: time-limited-batch-job
+spec:
+  activeDeadlineSeconds: 30
+  template:
+    metadata:
+      labels:
+        app: time-limited-batch-job
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: main
+        image: ksfzhaohui/batch-job
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br></div></div><p>指定activeDeadlineSeconds为30秒，超过30秒自动失败；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl create -f time-limited-batch-job.yaml
+job.batch/time-limited-batch-job created
+
+[d:\k8s]$ kubectl get job
+NAME                     COMPLETIONS   DURATION   AGE
+time-limited-batch-job   0/1           3s         3s
+
+[d:\k8s]$ kubectl get pod
+NAME                           READY   STATUS    RESTARTS   AGE
+time-limited-batch-job-jgmm6   1/1     Running   0          29s
+
+[d:\k8s]$ kubectl get pod
+NAME                           READY   STATUS        RESTARTS   AGE
+time-limited-batch-job-jgmm6   1/1     Terminating   0          30s
+
+[d:\k8s]$ kubectl get pod
+No resources found in default namespace.
+
+[d:\k8s]$ kubectl get job
+NAME                     COMPLETIONS   DURATION   AGE
+time-limited-batch-job   0/1           101s       101s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br></div></div><p>可以观察AGE标签下面的时间表示已经运行的时间，30秒之后pod状态变成Terminating；</p> <h4 id="_2-4-job定期运行"><a href="#_2-4-job定期运行" class="header-anchor">#</a> 2.4 Job定期运行</h4> <p>job也支持定期执行，有点像quartz，也支持类似的quartz表达式：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: corn-batch-job
+spec:
+  schedule: &quot;0-59 * * * *&quot;
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: corn-batch-job
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: main
+            image: ksfzhaohui/batch-job
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><p>指定schedule用来表示表达式分别是：分钟，小时，每个月中的第几天，月，星期几；以上配置表示每分钟运行一个job；</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl create -f cronjob.yaml
+cronjob.batch/corn-batch-job created
+
+[d:\k8s]$ kubectl get pod
+NAME                              READY   STATUS              RESTARTS   AGE
+corn-batch-job-1577263560-w2fq2   0/1     Completed           0          3m3s
+corn-batch-job-1577263620-92pc7   1/1     Running             0          2m2s
+corn-batch-job-1577263680-tmr8p   1/1     Running             0          62s
+corn-batch-job-1577263740-jmzqk   0/1     ContainerCreating   0          2s
+
+[d:\k8s]$ kubectl get job
+NAME                        COMPLETIONS   DURATION   AGE
+corn-batch-job-1577263560   1/1           2m5s       3m48s
+corn-batch-job-1577263620   1/1           2m4s       2m47s
+corn-batch-job-1577263680   0/1           107s       107s
+corn-batch-job-1577263740   0/1           47s        47s
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br></div></div><p>每个一分钟就运行一个job，可以删除CronJob</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>[d:\k8s]$ kubectl delete CronJob corn-batch-job
+cronjob.batch &quot;corn-batch-job&quot; deleted
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><h2 id="总结"><a href="#总结" class="header-anchor">#</a> 总结</h2> <p>本文继续在阅读<strong>Kubernetes in Action</strong>过程中，实际操作的笔记；主要介绍了相关的副本机制探针，ReplicationController，ReplicaSet，DaemonSet以及Job相关知识点。</p> <h2 id="参考"><a href="#参考" class="header-anchor">#</a> 参考</h2> <p>Kubernetes in Action</p></div></div> <div class="page-slot page-slot-bottom"><!-- 横向自适应 -->
+      <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="6620245489"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script></div> <div class="page-edit"><!----> <div class="tags"><a href="/xpai/tags/?tag=Kubernetes" title="标签">#Kubernetes</a></div> <div class="last-updated"><span class="prefix">上次更新:</span> <span class="time">2021/06/27, 11:58:02</span></div></div> <div class="page-nav-wapper"><div class="page-nav-centre-wrap"><a href="/xpai/pages/17a3aa/" class="page-nav-centre page-nav-centre-prev"><div class="tooltip">Kubernetes Pod操作篇</div></a> <a href="/xpai/pages/aa41a0/" class="page-nav-centre page-nav-centre-next"><div class="tooltip">Kubernetes服务篇</div></a></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/xpai/pages/17a3aa/" class="prev">Kubernetes Pod操作篇</a></span> <span class="next"><a href="/xpai/pages/aa41a0/">Kubernetes服务篇</a>→
+      </span></p></div></div></div> <div class="article-list"><div class="article-title"><a href="/xpai/archives/" class="iconfont icon-bi">最近更新</a></div> <div class="article-wrapper"><dl><dd>01</dd> <dt><a href="/xpai/pages/f8e1fa/"><div>开发者如何在技术+管理的路上越走越宽？</div></a> <span>06-27</span></dt></dl><dl><dd>02</dd> <dt><a href="/xpai/pages/37e0fd/"><div>RocketMQ生产者流程篇</div></a> <span>06-27</span></dt></dl><dl><dd>03</dd> <dt><a href="/xpai/pages/a81d2c/"><div>你对线程隔离的理解</div></a> <span>06-27</span></dt></dl> <dl><dd></dd> <dt><a href="/xpai/archives/" class="more">更多文章&gt;</a></dt></dl></div></div></main></div> <div class="footer"><div class="icons"><a href="mailto:619147075@qq.com" title="发邮件" target="_blank" class="iconfont icon-youjian"></a><a href="https://github.com/Ezuy-Lee/" title="GitHub" target="_blank" class="iconfont icon-github"></a><a href="https://music.163.com/#/playlist?id=966099149" title="听音乐" target="_blank" class="iconfont icon-erji"></a></div> 
+  Theme by
+  <a href="https://github.com/xugaoyi/vuepress-theme-vdoing" target="_blank" title="本站主题">Vdoing</a> 
+    | Copyright © 2020-2021
+    <span>Rainze-Lee | <a href="https://github.com/Ezuy-Lee/Rainze-Blog/blob/main/LICENSE" target="_blank">MIT License</a></span></div> <div class="buttons"><div title="返回顶部" class="button blur go-to-top iconfont icon-fanhuidingbu" style="display:none;"></div> <div title="去评论" class="button blur go-to-comment iconfont icon-pinglun" style="display:none;"></div> <div title="主题模式" class="button blur theme-mode-but iconfont icon-zhuti"><ul class="select-box" style="display:none;"><li class="iconfont icon-zidong">
+          跟随系统
+        </li><li class="iconfont icon-rijianmoshi">
+          浅色模式
+        </li><li class="iconfont icon-yejianmoshi">
+          深色模式
+        </li><li class="iconfont icon-yuedu">
+          阅读模式
+        </li></ul></div></div> <!----> <!----> <div class="custom-html-window custom-html-window-rb" style="display:;"><div class="custom-wrapper"><i class="close-but">×</i> <div><!-- 固定160*160px -->
+      <ins class="adsbygoogle"
+          style="display:inline-block;max-width:160px;max-height:160px"
+          data-ad-client="ca-pub-7828333725993554"
+          data-ad-slot="8377369658"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </div></div></div></div><div class="global-ui"><div></div></div></div>
+    <script src="/xpai/assets/js/app.463a16ef.js" defer></script><script src="/xpai/assets/js/2.86da3580.js" defer></script><script src="/xpai/assets/js/146.6d807a23.js" defer></script>
+  </body>
+</html>
