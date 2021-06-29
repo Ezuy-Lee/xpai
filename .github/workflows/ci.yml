@@ -10,7 +10,7 @@ on:
 
 jobs: # 工作流
   build: # 自定义名称
-    runs-on: windows-latest  #ubuntu-latest #运行在虚拟机环境ubuntu-latest
+    runs-on: ubuntu-latest   #windows-latest  #ubuntu-latest #运行在虚拟机环境ubuntu-latest
 
     strategy:
       matrix:
