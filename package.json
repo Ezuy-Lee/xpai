@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
      "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
+    "pro": "node --max_old_space_size=9000 build/build.js",
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
     "deploy": "bash deploy.sh",
