@@ -2,7 +2,7 @@
   "name": "theme-vdoing-blog",
   "version": "1.0.0",
   "scripts": {
-    "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
+    "fix-memory-limit": "cross-env LIMIT=8096 increase-memory-limit",
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
     "deploy": "bash deploy.sh",
