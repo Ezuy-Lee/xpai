@@ -4,6 +4,15 @@
 set -e
 
 # 生成静态文件
+
+rm -rf node_modules
+
+rm package-lock.json yarn.lock
+
+npm cache clear --force
+
+npm install cross-env
+
 npm install
 
 npm run fix-memory-limit
