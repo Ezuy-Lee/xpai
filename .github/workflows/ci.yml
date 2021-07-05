@@ -1,42 +1,40 @@
-name: CI
-
-#on: [push]
-
-# 在master分支发生push事件时触发。
+# 工作流名称，不设置的话默认取配置文件名
+name: Build and Deploy
+# 指定触发 workflow 的条件
+# 指定触发事件时，可以限定分支或标签
+# 当前是 只有 master分支上触发 push 事件时才执行工作流任务
 on: 
   push:
     branches:
       - master
-env: # 设置环境变量
-  TZ: Asia/Shanghai # 时区（设置时区可使页面中的`最近更新时间`使用时区时间）      
-      
+# 工作流执行的一个或多个任务
+jobs:
+  # 任务名称
+  build-and-deploy:
+    # 任务运行的容器类型（虚拟机环境）
+    runs-on: ubuntu-latest
+    # 任务执行的步骤
+    steps:
+      # 步骤名称
+      - name: Checkout 🛎️
+        # 使用的操作 actions，可以使用公共仓库，本地仓库，别人的仓库的action
+        # 拉取代码
+        uses: actions/checkout@master
 
-jobs: # 工作流
-  build: # 自定义名称
-    runs-on: ubuntu-latest   #windows-latest  #ubuntu-latest #运行在虚拟机环境ubuntu-latest
+      - name: Build and Deploy
+        # 构建发布 Github pages
+        uses: JamesIves/github-pages-deploy-action@master
+        # 该步骤所需的环境变量
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          # 在部署前要checkout的基本分支，默认是master
+          BASE_BRANCH: master # The branch the action should deploy from.
+          # 指定部署的分支，默认是 gh-pages 分支
+          BRANCH: gh-pages # The branch the action should deploy to.
+          # 存储库中要部署的文件夹。
+          # 该步骤会将项目中 FOLDER 指定文件夹下的文件推送到 BRANCH 分支，作为Github Pages 部署的内容。
+          # Vue CLI默认打包到 dist 目录
+          FOLDER: dist # The folder the action should deploy.
+          # 在向 BRANCH 分支推送代码前，可以指定构建脚本
+          BUILD_SCRIPT: npm install && npm run build # The build script the action should run prior to deploying.
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-
-    steps: # 步骤
-      - name: Checkout # 步骤1
-        uses: actions/checkout@v1 # 使用的动作。格式：userName/repoName。作用：检出仓库，获取源码。 官方actions库：https://github.com/actions
-      - name: Use Node.js ${{ matrix.node-version }} # 步骤2
-        uses: actions/setup-node@v1 # 作用：安装nodejs
-        with:
-          node-version: ${{ matrix.node-version }} # 版本
-      - name: run deploy.sh # 步骤3 （同时部署到github和coding）
-        env: # 设置环境变量
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }} # toKen私密变量
-        run: npm install && npm run deploy
-        
-
-     # - name: Build and Deploy # 步骤3 （只提交到github可以使用这个步骤）
-     #   uses: actions/checkout@v1 # JamesIves/github-pages-deploy-action@master # 作用：将项目构建和部署到github。 https://github.com/JamesIves/github-pages-deploy-action
-      #  env: # 设置环境变量
-        #  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # toKen私密变量
-       ##   BASE_BRANCH: master # 要部署的文件夹所在的分支.
-        #  BRANCH: gh-pages # 部署到的分支
-         # FOLDER: docs/.vuepress/dist # 要部署的文件夹.
-       #   BUILD_SCRIPT: npm install && npm run build && cd docs/.vuepress/dist && echo 'xugaoyi.com' > CNAME && cd - # 部署前要执行的命令（记得cd进入某个目录后，后面要cd -退回开始的目录）
