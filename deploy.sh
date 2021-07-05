@@ -15,7 +15,8 @@ npm install
 
 npm run fix-memory-limit
 
-npm run build --max_old_space_size=4096
+npm run build
+
 
 
 # 进入生成的文件夹
