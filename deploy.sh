@@ -6,6 +6,8 @@ set -e
 # 生成静态文件
 npm install
 
+npm run fix-memory-limit
+
 npm run build --max_old_space_size=4096
 
 
