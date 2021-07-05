@@ -38,7 +38,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }} # toKen私密变量
         run: npm install && npm run deploy
           
-      - name: build # 步骤3 （同时部署到github和coding）       
+      - name: build # 步骤3 （同时部署到github和coding）    
+        uses: actions/setup-node@v1 # 作用：安装nodejs
         env:
           GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
           # 在部署前要checkout的基本分支，默认是master
