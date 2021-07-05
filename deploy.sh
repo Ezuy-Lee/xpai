@@ -9,11 +9,7 @@ rm -rf node_modules
 
 npm cache clear --force
 
-npm install cross-env
-
 npm install
-
-npm run fix-memory-limit
 
 npm run build
 
