@@ -6,9 +6,13 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest   # 使用 ubuntu 服务器
+    strategy:
+      matrix:
+        node-version: [12.x]
+        
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.1   
+        uses: actions/checkout@v1
         with: 
           persist-credentials: false
       - name: install and build
@@ -17,9 +21,9 @@ jobs:
           npm run build
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.5.9  // 引用别人的部署插件
+        uses: actions/checkout@v1  # 引用别人的部署插件
         with: 
-          ACCESS_TOKEN: ${{ secrets.TOKEN }}   // 这里需要设置成你的 token
+          ACCESS_TOKEN: ${{ secrets.TOKEN }}   #这里需要设置成你的 token
           BRANCH: gh-pages
           FOLDER: docs/.vuepress/dist
           BUILD_SCRIPT: npm install && npm run build && cd docs/.vuepress/dist && cd - # 部署前要执行的命令（记得cd进入某个目录后，后面要cd -退回开始的目录）
