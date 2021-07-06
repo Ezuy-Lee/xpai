@@ -5,10 +5,6 @@ set -e
 
 # 生成静态文件
 
-npm cache clear --force
-
-npm install
-
 npm run build
 
 
