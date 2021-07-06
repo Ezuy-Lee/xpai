@@ -5,8 +5,6 @@ set -e
 
 # 生成静态文件
 
-rm -rf node_modules
-
 npm cache clear --force
 
 npm install
