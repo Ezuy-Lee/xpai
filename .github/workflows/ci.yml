@@ -1,20 +1,25 @@
-name: GitHub Actions Build and Deploy Demo
-on:
+name: 'github actions build and deploy gh-pages'
+on: 
   push:
     branches:
-      - master
+      - master  # 基于 master 分支，如果你的分支不是这个，请切换
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   # 使用 ubuntu 服务器
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v2.3.1   
+        with: 
+          persist-credentials: false
+      - name: install and build
+        run: |       #  这里执行 安装 打包
+          npm install
+          npm run build
 
-    - name: Build and Deploy
-      uses: actions/checkout@v1
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # toKen私密变量
-        BASE_BRANCH: master # 要部署的文件夹所在的分支.
-        BRANCH: gh-pages # 部署到的分支
-        FOLDER: docs/.vuepress/dist # 要部署的文件夹.
-        BUILD_SCRIPT: npm install && npm run build && cd docs/.vuepress/dist && cd - # 部署前要执行的命令（记得cd进入某个目录后，后面要cd -退回开始的目录）
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@3.5.9  // 引用别人的部署插件
+        with: 
+          ACCESS_TOKEN: ${{ secrets.TOKEN }}   // 这里需要设置成你的 token
+          BRANCH: gh-pages
+          FOLDER: docs/.vuepress/dist
+          BUILD_SCRIPT: npm install && npm run build && cd docs/.vuepress/dist && cd - # 部署前要执行的命令（记得cd进入某个目录后，后面要cd -退回开始的目录）
