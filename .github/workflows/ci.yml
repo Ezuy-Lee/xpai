@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@v1
 
     - name: Build and Deploy
-      uses: JamesIves/github-pages-deploy-action@master
+      uses: actions/checkout@v1
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # toKen私密变量
         BASE_BRANCH: master # 要部署的文件夹所在的分支.
